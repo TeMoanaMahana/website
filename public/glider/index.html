@@ -913,7 +913,7 @@
   <div class="flex justify-center w-full">
     <div 
       id="gliderMap" 
-      data-csv-url="/glider/glider_data_processed.csv"
+      data-csv-url="/data/glider_data_processed.csv"
       class="rounded-xl shadow-lg border border-border z-0" 
       style="height: 600px; width: 100%; min-width: 100%;">
     </div>
@@ -1036,7 +1036,7 @@
       
       
       
-      const PLOT_BASE = '\/glider\/images\/';
+      const PLOT_BASE = '\/images\/glider';
       const PLOTS = [
         { key: 'Temperature',                      label: 'Temperature' },
         { key: 'Salinity',                          label: 'Salinity' },
@@ -1354,12 +1354,6 @@
   
   
   
-  
-    <script>
-      window.addEventListener("load", (e) => {
-        const lightbox = GLightbox();
-      });
-    </script>
   
 
   <p class="text-xs text-center italic mt-2">An Ocean Glider.</p>

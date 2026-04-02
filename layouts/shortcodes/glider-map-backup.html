@@ -3,7 +3,7 @@
 <div class="flex justify-center w-full">
   <div 
     id="gliderMap" 
-    data-csv-url="{{ "data/glider_data_processed.csv" | relURL }}"
+    data-csv-url="{{ "glider_data_processed.csv" | relURL }}"
     class="rounded-xl shadow-lg border border-border z-0" 
     style="height: 600px; width: 100%; min-width: 100%;">
   </div>
@@ -40,10 +40,10 @@
         scrollWheelZoom: false
     }).setView([-43.07, 173.48], 8);
 
-    map.createPane('tickPane').style.zIndex = 450;
+    map.createPane('tickPane').style.zIndex = 450;  // above tiles (200) and polylines (400), below markers (600)
     map.createPane('arrowPane').style.zIndex = 440;
 
-    // --- Ctrl/Cmd scroll-to-zoom hint ---
+    // --- Ctrl/Cmd scroll-to-zoom ---
     const container = map.getContainer();
 
     const hint = document.createElement('div');
@@ -117,104 +117,25 @@
       lineJoin: 'round'
     }).addTo(map);
 
-    let trackPathHitbox = L.polyline([], {
-      weight: 20,
-      opacity: 0,
-      interactive: true
-    }).addTo(map);
+    // ── Layer group for day-boundary tick marks ───────────────────────────────
+    let divePointsLayer = L.layerGroup().addTo(map);
 
-    // ── Plot names and labels for the popup ──────────────────────────────────
-    // Keys must match filenames produced by glider_plotting.py exactly:
-    // the script strips everything from '(' or '[' onward, then replaces spaces with '_'.
-    const PLOT_BASE = '{{ "images/glider" | relURL }}';
-    const PLOTS = [
-      { key: 'Temperature',                      label: 'Temperature' },
-      { key: 'Salinity',                          label: 'Salinity' },
-      { key: 'PAR',                               label: 'PAR' },
-      { key: 'Coloured_Dissolved_Organic_Matter', label: 'CDOM' },
-      { key: 'Chlorophyll-a',                     label: 'Chlorophyll' },
-      { key: 'Optical_Backscatter',               label: 'Backscatter' },
-    ];
-
-    function getPopupWidth() {
-      const mapWidth = map.getContainer().offsetWidth;
-      return Math.min(520, Math.max(260, Math.round(mapWidth * 0.55)));
-    }
-
-    function buildPlotPopup(activeKey) {
-      const popupWidth = getPopupWidth();
-      const buttons = PLOTS.map(p => `
-        <button
-          class="btn-glass-sm ${p.key === activeKey ? 'active-btn-glass' : ''}"
-          data-plot-key="${p.key}"
-          style="margin: 3px 3px 3px 0;">
-          ${p.label}
-        </button>`
-      ).join('');
-
-      return `
-        <div style="width: ${popupWidth}px; font-family: sans-serif;">
-          <h4 style="margin: 0 0 8px 0; color: #333;">Track Plots</h4>
-          <div style="margin-bottom: 8px; line-height: 1.8;">
-            ${buttons}
-          </div>
-          <a id="glider-plot-link" href="${PLOT_BASE}${activeKey}.png" target="_blank" rel="noopener noreferrer">
-            <img
-              id="glider-plot-img"
-              src="${PLOT_BASE}${activeKey}.png"
-              alt="${activeKey}"
-              style="width: 100%; border-radius: 6px; display: block; cursor: pointer;" />
-          </a>
-        </div>`;
-    }
-
-    const trackPopup = L.popup({
-      maxWidth: getPopupWidth(),
-      minWidth: getPopupWidth(),
-      autoPan: true,
-      autoPanPadding: [20, 20]
-    });
-
-    map.on('resize', function() {
-      const w = getPopupWidth();
-      trackPopup.options.maxWidth = w;
-      trackPopup.options.minWidth = w;
-    });
-
-    trackPathHitbox.on('click', function(e) {
-      trackPopup
-        .setLatLng(e.latlng)
-        .setContent(buildPlotPopup('Temperature'))
-        .openOn(map);
-    });
-
-    map.on('popupopen', function(e) {
-      if (e.popup !== trackPopup) return;
-
-      const container = e.popup.getElement();
-      container.addEventListener('click', function(evt) {
-        const btn = evt.target.closest('[data-plot-key]');
-        if (!btn) return;
-
-        const key = btn.dataset.plotKey;
-
-        container.querySelector('#glider-plot-img').src = `${PLOT_BASE}${key}.png`;
-        container.querySelector('#glider-plot-link').href = `${PLOT_BASE}${key}.png`;
-
-        container.querySelectorAll('[data-plot-key]').forEach(b => {
-          b.classList.toggle('active-btn-glass', b.dataset.plotKey === key);
-        });
-      });
-    });
-
+    // ── Layer group for directional arrow markers ─────────────────────────────
     let arrowLayer = L.layerGroup().addTo(map);
+
+    const popupContent = `
+      <div style="font-family: sans-serif; padding: 5px;">
+        <h3 style="margin: 0 0 5px 0; color: #333;">Glider</h3>
+        <p style="margin: 2px 0;"><strong>Status:</strong> Unactive</p>
+        <p style="margin: 2px 0;"><strong>Battery:</strong> 100%</p>
+        <p style="margin: 2px 0;"><strong>Last Update:</strong> N/A</p>
+      </div>
+    `;
 
     let gliderMarker = L.marker([0, 0], {icon: gliderIcon, bubblingMouseEvents: true})
       .addTo(map)
-      .bindPopup('');
+      .bindPopup(popupContent); 
 
-    let initialFitDone = false;
-    
     async function updateGlider() {
       try {
         const csvUrl = document.getElementById('gliderMap').dataset.csvUrl;
@@ -223,17 +144,15 @@
 
         const rows = text.trim().split(/\r?\n/);
 
-        // Skip only the header row (row 0).
-        // Processed CSV columns: 0=Day_Index, 1=Timestamp(UTC), 2=Longitude, 3=Latitude
+        // Parse all rows that have coordinates (col 0=Day_Index, 2=Lon, 3=Lat)
         const coordRows = rows
-          .slice(1)
+          .slice(2)
           .map(row => {
-            const cols   = row.split(',');
+            const cols = row.split(',');
             const dayIndex = parseInt(cols[0]);
-            const unixSecs = parseFloat(cols[1]);
-            const lng      = parseFloat(cols[2]);
-            const lat      = parseFloat(cols[3]);
-            return { dayIndex, unixSecs, lat, lng };
+            const lng = parseFloat(cols[2]);
+            const lat = parseFloat(cols[3]);
+            return { dayIndex, lat, lng };
           })
           .filter(r => !isNaN(r.lat) && !isNaN(r.lng));
 
@@ -244,36 +163,16 @@
 
         const history = coordRows.map(r => [r.lat, r.lng]);
 
-        const lastRow  = coordRows[coordRows.length - 1];
-        const lastDate = isNaN(lastRow.unixSecs)
-          ? 'N/A'
-          : new Date(lastRow.unixSecs * 1000).toLocaleString('en-NZ', {
-              timeZone: 'Pacific/Auckland',
-              day:      '2-digit',
-              month:    'short',
-              year:     'numeric',
-              hour:     '2-digit',
-              minute:   '2-digit',
-            });
-
-        const gliderPopupContent = `
-          <div style="font-family: sans-serif; padding: 5px;">
-            <h4 style="margin: 0 0 5px 0; color: #333;">Maui Ocean Glider</h4>
-            <p style="margin: 2px 0;"><strong>Status:</strong> Active</p>
-            <p style="margin: 2px 0;"><strong>Last Update:</strong> ${lastDate}</p>
-          </div>
-        `;
-
-        gliderMarker.setPopupContent(gliderPopupContent);
-
+        // ── Draw polyline ─────────────────────────────────────────────────────
         trackPath.setLatLngs(history);
-        trackPathHitbox.setLatLngs(history);
 
         // ── Directional arrows spaced by real-world distance ──────────────────
-        const ARROW_SPACING_M = 10000;
+        // Accumulates haversine metres so arrows are evenly spread geographically,
+        // regardless of how clustered the GPS surfacing fixes are.
+        const ARROW_SPACING_M = 7500; // metres between arrows — adjust to taste
 
         arrowLayer.clearLayers();
-        let distAccum = ARROW_SPACING_M / 2;
+        let distAccum = ARROW_SPACING_M / 2; // offset so first arrow isn't right at the start
         for (let i = 1; i < history.length - 1; i++) {
           const prev = history[i - 1];
           const curr = history[i];
@@ -285,18 +184,65 @@
 
             const arrowIcon = L.divIcon({
               className: '',
-              html: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"
+              html: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 16 16"
                        style="transform: rotate(${bearing}deg); display:block;">
                        <polygon points="8,1 15,15 8,11 1,15"
-                         fill="#002F73" opacity="1" stroke="#B8D5FF" stroke-width="5" stroke-linejoin="round" paint-order="stroke fill"/>
+                         fill="#002F73" opacity="0.9"/>
                      </svg>`,
               iconSize:   [16, 16],
-              iconAnchor: [8, 8],
+              iconAnchor: [7, 7],
             });
 
             L.marker(curr, { pane: 'arrowPane', icon: arrowIcon, interactive: false }).addTo(arrowLayer);
           }
         }
+
+        // ── Find GPS points where Day_Index increases ─────────────────────────
+        const dayBoundaryPoints = [];
+        for (let i = 1; i < coordRows.length; i++) {
+          if (coordRows[i].dayIndex > coordRows[i - 1].dayIndex) {
+            dayBoundaryPoints.push({ pos: [coordRows[i].lat, coordRows[i].lng], histIdx: i });
+          }
+        }
+
+        // ── Draw a perpendicular tick at each day boundary ────────────────────
+        function offsetPoint(lat, lng, bearingDeg, metres) {
+          const R = 6371000;
+          const d = metres / R;
+          const brng = bearingDeg * Math.PI / 180;
+          const lat1 = lat * Math.PI / 180;
+          const lon1 = lng * Math.PI / 180;
+          const lat2 = Math.asin(
+            Math.sin(lat1) * Math.cos(d) +
+            Math.cos(lat1) * Math.sin(d) * Math.cos(brng)
+          );
+          const lon2 = lon1 + Math.atan2(
+            Math.sin(brng) * Math.sin(d) * Math.cos(lat1),
+            Math.cos(d) - Math.sin(lat1) * Math.sin(lat2)
+          );
+          return [lat2 * 180 / Math.PI, lon2 * 180 / Math.PI];
+        }
+
+        const TICK_HALF_LENGTH = 800; // metres each side of the track
+
+        divePointsLayer.clearLayers();
+        dayBoundaryPoints.forEach(({ pos: [lat, lng], histIdx }) => {
+          const prev = history[histIdx - 1] || history[histIdx];
+          const next = history[histIdx + 1] || history[histIdx];
+
+          const trackBearing = getBearing(prev[0], prev[1], next[0], next[1]);
+          const perpBearing  = (trackBearing + 90) % 360;
+
+          const p1 = offsetPoint(lat, lng, perpBearing,       TICK_HALF_LENGTH);
+          const p2 = offsetPoint(lat, lng, perpBearing + 180, TICK_HALF_LENGTH);
+
+          L.polyline([p1, p2], {
+            pane: 'tickPane',
+            color:   '#ffffff',
+            weight: 4,
+            opacity: 0.9,
+          }).addTo(divePointsLayer);
+        });
 
         // ── Rotate & reposition glider marker ────────────────────────────────
         const newPos = history[history.length - 1];
@@ -325,9 +271,8 @@
 
         gliderMarker.setLatLng(newPos);
 
-        if (!initialFitDone && trackPath.getBounds().isValid()) {
+        if (trackPath.getBounds().isValid()) {
           map.fitBounds(trackPath.getBounds(), { padding: [40, 40] });
-          initialFitDone = true;
         }
 
         lucide.createIcons();
