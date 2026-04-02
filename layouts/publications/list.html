@@ -1,0 +1,80 @@
+{{ define "main" }}
+{{ partial "page-header" . }}
+
+<section class="section">
+  <div class="container">
+
+    {{/* --- FILTER BUTTONS (optional, mirrors your author filter pattern) --- */}}
+    {{ $allTags := slice }}
+    {{ range .RegularPages }}
+      {{ range .Params.tags }}
+        {{ $allTags = $allTags | append . }}
+      {{ end }}
+    {{ end }}
+
+    {{ if gt (len ($allTags | uniq)) 0 }}
+    <div class="flex flex-wrap justify-center gap-3 mb-12">
+      <button class="btn-glass active-btn-glass" data-filter="all">All Publications</button>
+      {{ range ($allTags | uniq) }}
+        <button class="btn-glass" data-filter="{{ . | urlize }}">{{ . }}</button>
+      {{ end }}
+    </div>
+    {{ end }}
+
+    {{/* --- PUBLICATIONS LIST (newest first) --- */}}
+    <div class="row" id="publications-grid">
+      {{ range sort .RegularPages "Params.year" "desc" }}
+
+        {{ $itemTags := "" }}
+        {{ with .Params.tags }}
+          {{ if reflect.IsSlice . }}
+            {{ $slugs := slice }}
+            {{ range . }}{{ $slugs = $slugs | append (. | urlize) }}{{ end }}
+            {{ $itemTags = delimit $slugs " " }}
+          {{ else }}
+            {{ $itemTags = . | urlize }}
+          {{ end }}
+        {{ end }}
+
+        <div class="col-12 mb-6 publication-item" data-tags="{{ $itemTags }}">
+          {{ partial "components/publication-card" . }}
+        </div>
+
+      {{ end }}
+    </div>
+
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.btn-glass');
+    const items   = document.querySelectorAll('.publication-item');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        buttons.forEach(btn => btn.classList.remove('active-btn-glass'));
+        button.classList.add('active-btn-glass');
+
+        const filterValue = button.getAttribute('data-filter');
+
+        items.forEach(item => {
+          const itemTags = item.getAttribute('data-tags').split(' ');
+          if (filterValue === 'all' || itemTags.includes(filterValue)) {
+            item.style.display = 'block';
+            setTimeout(() => {
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0) scale(1)';
+            }, 10);
+          } else {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(10px) scale(0.95)';
+            setTimeout(() => { item.style.display = 'none'; }, 300);
+          }
+        });
+      });
+    });
+  });
+</script>
+
+{{ end }}

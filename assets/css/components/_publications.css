@@ -1,0 +1,221 @@
+/* =====================================================
+   PUBLICATION CARD — glass list variant
+   Same variables as .author-card-glass, horizontal layout
+   ===================================================== */
+
+.publication-card-glass {
+  background-color: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--glass-shadow-light);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  color: var(--glass-text-light);
+
+  /* Horizontal flex layout — the key difference from author cards */
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  a,
+  p {
+    color: var(--glass-text-light);
+    transition: var(--transition-smooth);
+  }
+
+  &:hover {
+    background-color: var(--glass-bg-light-hover);
+    box-shadow: var(--glass-shadow-light-hover);
+    transform: var(--transformation-hover);
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    a,
+    p {
+      color: var(--glass-text-light);
+    }
+  }
+}
+
+/* --- YEAR COLUMN (left) --- */
+.publication-card-year {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  padding: 1.5rem 1rem;
+  border-right: var(--glass-border);
+  flex-shrink: 0;
+}
+
+.publication-year-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+/* --- BODY COLUMN (middle, grows to fill) --- */
+.publication-card-body {
+  flex: 1 1 auto;
+  padding: 1.25rem 1.5rem;
+  min-width: 0;
+  /* prevents text overflow blowout */
+}
+
+/* Clamp abstract to 3 lines */
+.publication-abstract {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* --- TAGS --- */
+.publication-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.publication-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background-color: var(--glass-bg-light);
+  border: var(--glass-border);
+  opacity: 0.75;
+}
+
+/* --- ACTIONS COLUMN (right) --- */
+.publication-card-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  padding: 1.25rem 1.25rem;
+  border-left: var(--glass-border);
+  min-width: 100px;
+  flex-shrink: 0;
+  gap: 0.25rem;
+}
+
+/* --- RESPONSIVE: stack on mobile --- */
+@media (max-width: 640px) {
+  .publication-card-glass {
+    flex-direction: column;
+  }
+
+  .publication-card-year {
+    border-right: none;
+    border-bottom: var(--glass-border);
+    min-width: unset;
+    padding: 0.75rem 1.25rem;
+    justify-content: flex-start;
+  }
+
+  .publication-year-badge {
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+
+  .publication-card-actions {
+    border-left: none;
+    border-top: var(--glass-border);
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-width: unset;
+  }
+}
+
+/* --- DARK MODE --- */
+.dark {
+  .publication-card-glass {
+    background-color: var(--glass-bg-dark);
+    color: var(--glass-text-dark);
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    a,
+    p {
+      color: var(--glass-text-dark);
+    }
+
+    &:hover {
+      background-color: var(--glass-bg-dark-hover);
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      a,
+      p {
+        color: var(--glass-text-dark);
+      }
+    }
+
+    .publication-tag {
+      background-color: var(--glass-bg-dark);
+    }
+  }
+}
+
+/* --- DOI display --- */
+.publication-doi {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.publication-doi-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  border: var(--glass-border);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.publication-doi-link {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  font-family: monospace;
+  word-break: break-all;
+
+  &:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+}

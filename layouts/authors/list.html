@@ -1,0 +1,104 @@
+{{ define "main" }}
+{{ partial "page-header" . }}
+
+<section class="section">
+  <div class="container">
+
+    {{ if .Params.group_by_role }}
+    {{ range .RegularPages.GroupByParam "user_groups" }}
+    <div class="row">
+      <div class="col-12">
+        <h2 class="h3 mb-8 border-b pb-2 text-dark dark:text-darkmode-dark">
+          {{ .Key }}
+        </h2>
+      </div>
+    </div>
+    <div class="row mb-12">
+      {{ range .Pages }}
+      <div class="col-6 md:col-4 lg:col-3 mb-10">
+        {{ partial "components/author-card" . }}
+      </div>
+      {{ end }}
+    </div>
+    {{ end }}
+
+    {{ else }}
+    {{/* --- OPTION B: DEMOCRATIZED VIEW WITH user_groups FILTERS --- */}}
+
+    <div class="flex flex-wrap justify-center gap-3 mb-12">
+      <button class="btn-glass active-btn-glass" data-filter="all">All Members</button>
+
+      {{ $allGroups := slice }}
+      {{ range .RegularPages }}
+      {{ with .Params.user_groups }}
+      {{ if reflect.IsSlice . }}
+      {{ $allGroups = $allGroups | append . }}
+      {{ else }}
+      {{ $allGroups = $allGroups | append . }}
+      {{ end }}
+      {{ end }}
+      {{ end }}
+
+      {{ range ($allGroups | uniq) }}
+      <button class="btn-glass" data-filter="{{ . | urlize }}">{{ . }}</button>
+      {{ end }}
+    </div>
+
+    <div class="row" id="author-grid">
+      {{ range .RegularPages.ByParam "last_name" }}
+      {{/* We turn the user_groups list into a space-separated string of slugified names */}}
+      {{ $itemGroups := "" }}
+      {{ with .Params.user_groups }}
+      {{ if reflect.IsSlice . }}
+      {{ $slugs := slice }}
+      {{ range . }}{{ $slugs = $slugs | append (. | urlize) }}{{ end }}
+      {{ $itemGroups = delimit $slugs " " }}
+      {{ else }}
+      {{ $itemGroups = . | urlize }}
+      {{ end }}
+      {{ end }}
+
+      <div class="col-12 sm:col-6 md:col-6 lg:col-3 mb-10 author-item" data-groups="{{ $itemGroups }}">
+        {{ partial "components/author-card" . }}
+      </div>
+      {{ end }}
+    </div>
+    {{ end }}
+
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.btn-glass');
+    const items = document.querySelectorAll('.author-item');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        buttons.forEach(btn => btn.classList.remove('active-btn-glass'));
+        button.classList.add('active-btn-glass');
+
+        const filterValue = button.getAttribute('data-filter');
+
+        items.forEach(item => {
+          const itemGroups = item.getAttribute('data-groups').split(' ');
+
+          if (filterValue === 'all' || itemGroups.includes(filterValue)) {
+            item.style.display = 'block';
+            setTimeout(() => {
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0) scale(1)';
+            }, 10);
+          } else {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(10px) scale(0.95)';
+            setTimeout(() => {
+              item.style.display = 'none';
+            }, 300);
+          }
+        });
+      });
+    });
+  });
+</script>
+{{ end }}

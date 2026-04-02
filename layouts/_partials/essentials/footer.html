@@ -1,0 +1,60 @@
+<footer class="bg-light dark:bg-darkmode-light">
+  <div class="container">
+    <div class="row items-center py-10">
+      <div class="lg:col-3 mb-8 text-center lg:mb-0 lg:text-left">
+        <!-- navbar brand/logo -->
+        <a
+          class="navbar-brand inline-block"
+          href="{{ site.Home.RelPermalink }}">
+          {{/* https://github.com/gethugothemes/hugo-modules/tree/master/images */}}
+          {{ partial "logo" }}
+        </a>
+      </div>
+      <div class="lg:col-6 mb-8 text-center lg:mb-0">
+        <ul>
+          {{ range site.Menus.footer }}
+            <li class="m-3 inline-block">
+              <a
+                {{ if findRE `^http` .URL }}
+                  target="_blank" rel="noopener"
+                {{ end }}
+                href="{{ if findRE `^#` .URL }}
+                  {{ if not $.IsHome }}
+                    {{ site.Home.RelPermalink }}
+                  {{ end }}{{ .URL }}
+                {{ else }}
+                  {{ .URL | relLangURL }}
+                {{ end }}"
+                >{{ .Name }}</a
+              >
+            </li>
+          {{ end }}
+        </ul>
+      </div>
+      <div class="lg:col-3 mb-8 text-center lg:mb-0 lg:mt-0 lg:text-right">
+        {{ if site.Data.social.main }}
+          <div class="flex flex-wrap justify-center lg:justify-end gap-3">
+            {{ range site.Data.social.main}}
+              <a href="{{ .link | safeURL }}" target="_blank" rel="noopener nofollow"
+                 class="btn-glass flex items-center gap-3 py-1.5 px-3">
+                {{ if .text }}
+                  <span class="font-medium">{{ .text }}</span>
+                {{ end }}                
+                <span class="sr-only">{{ .name }}</span>
+                <i class="{{ .icon }} text-base"></i>
+              </a>
+            {{ end }}
+          </div>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+  <div class="border-border dark:border-darkmode-border border-t py-7">
+    <div
+      class="text-text-light dark:text-darkmode-text-light container text-center">
+      <p>
+        {{ site.Params.copyright | markdownify }}
+      </p>
+    </div>
+  </div>
+</footer>

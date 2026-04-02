@@ -1,0 +1,79 @@
+{{ define "main" }}
+{{ partial "page-header" . }}
+
+<section class="section">
+  <div class="container">
+    <!-- Collapsible sidebar for mobile -->
+    <div class="mb-8 lg:hidden container">
+      <button id="toggle-sidebar-mobile" class="btn-glass py-3 px-4 flex justify-between items-center">
+        <span>Filters</span>
+        <i id="sidebar-chevron" class="fa fa-chevron-down w-5 h-5 transition-transform duration-300">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </i>
+      </button>
+
+      <div id="mobile-sidebar-content" class="mt-2 overflow-hidden transition-all duration-300 max-h-0 lg:max-h-screen">
+        <!-- widget -->
+        {{ $widget:= site.Params.widgets.sidebar }}
+        {{ partialCached "widgets/widget-wrapper" ( dict "Widgets" $widget "Scope" . ) }}
+      </div>
+    </div>
+
+    <div class="row gx-5">
+      <!-- sidebar - visible on desktop -->
+      <div class="lg:col-4 hidden lg:block">
+        <!-- widget -->
+        {{ $widget:= site.Params.widgets.sidebar }}
+        {{ partialCached "widgets/widget-wrapper" ( dict "Widgets" $widget "Scope" . ) }}
+      </div>
+
+      <!-- blog posts -->
+      <div class="lg:col-8 order-last lg:order-first">
+        <div class="row">
+          {{ $paginator:= .Paginate .RegularPages }}
+          {{ range $paginator.Pages }}
+          <div class="md:col-6 mb-14">
+            {{ partial "components/blog-card" . }}
+          </div>
+          {{ end }}
+        </div>
+        {{ partial "components/pagination.html" . }}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.getElementById('toggle-sidebar-mobile');
+    const sidebarContent = document.getElementById('mobile-sidebar-content');
+    const chevron = document.getElementById('sidebar-chevron');
+
+    if (toggleBtn && sidebarContent) {
+      toggleBtn.addEventListener('click', function () {
+        const isOpen = sidebarContent.classList.contains('max-h-0');
+
+        if (isOpen) {
+          // Open the sidebar
+          sidebarContent.classList.remove('max-h-0');
+          sidebarContent.style.maxHeight = sidebarContent.scrollHeight + 'px';
+          chevron.classList.add('rotate-180');
+          toggleBtn.classList.add('active-btn-glass');
+        } else {
+          // Close the sidebar
+          sidebarContent.style.maxHeight = '0';
+          chevron.classList.remove('rotate-180');
+          toggleBtn.classList.remove('activate-btn-glass');
+
+          // Reset max-height after transition completes
+          setTimeout(() => {
+            if (!sidebarContent.classList.contains('max-h-0')) {
+              sidebarContent.classList.add('max-h-0');
+            }
+          }, 300);
+        }
+      });
+    }
+  });
+</script>
+{{ end }}

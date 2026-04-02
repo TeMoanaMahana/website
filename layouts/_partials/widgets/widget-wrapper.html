@@ -1,0 +1,7 @@
+<aside class="sticky-sidebar-container space-y-6">
+  {{ range .Widgets }}
+    <div class="sidebar-glass-wrapper p-6 transition-all duration-300">
+      {{ partial ( print "widgets/" . ) $.Scope }}
+    </div>
+  {{ end }}
+</aside>

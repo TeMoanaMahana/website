@@ -1,0 +1,90 @@
+{{ define "main" }}
+  <section class="section-sm">
+    <div class="container">
+      <div class="row justify-center text-center">
+        <div class="md:col-10 lg:col-8">
+          {{ if .Params.image }}
+          <div class="mb-8">
+            {{ partial "image" (dict "Src" .Params.image "Context" .Page "Alt" .Title "Class" "rounded-lg shadow mx-auto" "Size" "800x") }}
+          </div>
+          {{ end }}
+          <h2 class="h2 mb-6">{{ .Title }}</h2>
+          <div class="content text-lg">
+            {{ .Content }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{ range $index, $element := .Params.about_sections }}
+  <section class="section-sm {{ if (modBool $index 2) }}bg-gradient{{ end }}">
+    <div class="container">
+      <div class="row items-center text-center lg:text-left">
+        <div class="md:col-5 {{ if (modBool $index 2) }}order-1{{ else }}order-1 md:order-2{{ end }} mb-8 md:mb-0">
+          {{ partial "image" (dict "Src" .image "Context" $.Page "Alt" .title "Class" "rounded-lg shadow w-full" "Size" "500x") }}
+        </div>
+        <div class="md:col-7 {{ if (modBool $index 2) }}order-2 md:pl-12{{ else }}order-2 md:order-1 md:pr-12{{ end }}">
+          <h3 class="h4 mb-4">{{ .title }}</h3>
+          <div class="content text-lg">
+            {{ .content | markdownify }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  {{ with .Params.partners }}
+  <section class="section-sm bg-gradient">
+    <div class="container">
+      <div class=" items-center">      
+        <div class="order-2 mb-8 md:mb-0 md:pl-12">
+          <h3 class="h2 mb-4 text-center">Our Partners</h3>
+          <div class="content text-lg">
+            {{ .statement | markdownify }}
+          </div>
+        </div>
+        <div class="order-1 md:order-1">
+          <div class="logo-glass-container">
+            {{ range .list }}
+              <div class="partner-logo">
+                {{ if .link }}<a href="{{ .link | safeURL }}" target="_blank">{{ end }}
+                  {{ partial "image" (dict "Src" .logo "Context" $.Page "Alt" .name "Class" "img-fluid" "Size" "x60") }}
+                {{ if .link }}</a>{{ end }}
+              </div>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  {{ with .Params.supporting_orgs }}
+  <section class="section-sm">
+    <div class="container">
+      <div class="items-ceneter">
+        <div class="order-2 mb-8 md:mb-0 md:pl-12">
+          <h3 class="h2 mb-4 text-center">Supporting Organisations</h3>
+          <div class="content text-lg">
+            {{ .statement | markdownify }}
+          </div>
+        </div>
+        <div class="order-1">
+          <div class="logo-glass-container">
+            {{ range .list }}
+              <div class="org-logo">
+                {{ if .link }}<a href="{{ .link | safeURL }}" target="_blank">{{ end }}
+                  {{ partial "image" (dict "Src" .logo "Context" $.Page "Alt" .name "Class" "img-fluid" "Size" "x60") }}
+                {{ if .link }}</a>{{ end }}
+              </div>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+{{ end }}

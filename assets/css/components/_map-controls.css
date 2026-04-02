@@ -1,0 +1,87 @@
+/* --- Map overlay: always light glass regardless of theme --- */
+.map-glass-light {
+  background-color: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow-light);
+  border: var(--glass-border);
+  border-radius: 50px;
+  color: var(--glass-text-light);
+  padding: 8px 20px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border-radius: 50px !important;
+
+  background-color: var(--glass-bg-light) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow-light) !important;
+  border: var(--glass-border) !important;
+  overflow: hidden;
+  transition: transform 0.3s ease !important;
+}
+
+.leaflet-control-zoom a {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+
+  width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: none !important;
+  padding-right: 1px;
+  padding-bottom: 1px;
+}
+
+.leaflet-control-zoom a:hover {
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: translateY(-1px);
+}
+
+/* --- Leaflet scale bar --- */
+.leaflet-control-scale {
+  background-color: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow-light);
+  border: var(--glass-border);
+  border-radius: 50px;
+  padding: 4px 14px;
+}
+
+.leaflet-control-scale-line {
+  background: transparent !important;
+  backdrop-filter: none;
+  box-shadow: none;
+  border-radius: 0;
+
+  border: none;
+  border-bottom: 1px solid var(--glass-text-light);
+  border-left: 1px solid var(--glass-text-light);
+  border-right: 1px solid var(--glass-text-light);
+
+  padding: 0;
+  margin: 0;
+
+  color: var(--glass-text-light);
+  font-family: inherit;
+  text-align: center;
+
+  display: block;
+  padding-bottom: 3px;
+}

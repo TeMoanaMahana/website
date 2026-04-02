@@ -1,0 +1,108 @@
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="mb-8 text-center">Near Real Time Sea Surface Temperature Anomaly</h2>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+        <div class="flex justify-center w-full">
+          <div 
+            id="noaaMap" 
+            class="rounded-xl shadow-lg border border-border z-0" 
+            style="height: 600px; width: 100%; min-width: 100%;">
+          </div>
+        </div>
+
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+        <script>
+        (function() {
+            document.addEventListener("DOMContentLoaded", function() {
+                const map = L.map('noaaMap', {
+                    crs: L.CRS.EPSG4326,
+                    center: [-41.2710849, 173.2836756],
+                    zoom: 3,
+                    scrollWheelZoom: false
+                });
+
+                L.control.scale({ imperial: false }).addTo(map);
+
+                // --- Ctrl/Cmd scroll-to-zoom ---
+                const container = map.getContainer();
+
+                const hint = document.createElement('div');
+                hint.textContent = 'Hold Ctrl / ⌘ Cmd to zoom';
+                hint.className = 'map-glass-light';
+                Object.assign(hint.style, {
+                    position:      'absolute',
+                    top:           '50%',
+                    left:          '50%',
+                    transform:     'translate(-50%, -50%)',
+                    pointerEvents: 'none',
+                    opacity:       '0',
+                    transition:    'opacity 0.2s',
+                    zIndex:        '1000',
+                });
+                container.style.position = 'relative'; // ensure hint positions inside map
+                container.appendChild(hint);
+
+                let hintTimeout;
+                function showHint() {
+                    hint.style.opacity = '1';
+                    clearTimeout(hintTimeout);
+                    hintTimeout = setTimeout(() => { hint.style.opacity = '0'; }, 1500);
+                }
+
+                container.addEventListener('wheel', function(e) {
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const delta = e.deltaY < 0 ? 1 : -1;
+                        map.setZoom(map.getZoom() + delta);
+                    } else {
+                        showHint();
+                    }
+                }, { passive: false });
+
+                // --- WMS layer ---
+                const baseUrl = 'https://pae-paha.pacioos.hawaii.edu/erddap/wms/dhw_5km/request?';
+                L.tileLayer.wms(baseUrl, {
+                    layers: 'dhw_5km:CRW_SSTANOMALY',
+                    format: 'image/png',
+                    transparent: true,
+                    version: '1.3.0',
+                    attribution: 'NOAA Coral Reef Watch (CRW)'
+                }).addTo(map);
+
+                // --- Land vectors (wrapped) ---
+                const landStyle = {
+                    fillColor: "#2c3e50",
+                    fillOpacity: 1,
+                    color: "#ffffff",
+                    weight: 1
+                };
+
+                function addLandAtOffset(data, lngOffset) {
+                    L.geoJSON(data, {
+                        coordsToLatLng: function(coords) {
+                            return new L.LatLng(coords[1], coords[0] + lngOffset);
+                        },
+                        style: landStyle
+                    }).addTo(map);
+                }
+
+                fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
+                    .then(res => res.json())
+                    .then(data => {
+                        addLandAtOffset(data, -360);
+                        addLandAtOffset(data,    0);
+                        addLandAtOffset(data,  360);
+                    });
+            });
+        })();
+        </script>
+      </div>
+    </div>
+  </div>
+</section>

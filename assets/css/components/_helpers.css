@@ -1,0 +1,102 @@
+.glider-map-glass {
+  border-radius: 20px;
+  overflow: hidden;
+  border: var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Text Truncation Helper */
+.text-ellipsis-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Sidebar Card Specifics */
+.sidebar-glass-wrapper {
+  /* Inherits from your base glass system */
+  border-radius: var(--radius-card);
+  /* Slightly tighter radius than main cards */
+  background-color: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow-light);
+}
+
+/* Removes standard list styling that might interfere */
+.sidebar-glass-wrapper ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Ensure Titles inside sidebar cards look distinct */
+.sidebar-glass-wrapper h5 {
+  border-bottom: 1px solid rgba(127, 127, 127, 0.1);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.dark .sidebar-glass-wrapper {
+  background-color: var(--glass-bg-dark);
+  box-shadow: var(--glass-shadow-dark);
+}
+
+.dark .sidebar-glass-wrapper h5 {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* --- STICKY SIDEBAR LOGIC --- */
+
+@media (min-width: 1024px) {
+
+  /* Only apply to desktop (LG screens and up) */
+  .sticky-sidebar-container {
+    position: sticky;
+    top: 7.5rem;
+    /* The gap between the top of the screen and the card */
+    align-self: flex-start;
+    /* Crucial for sticky flex items */
+    height: fit-content;
+  }
+}
+
+/* Ensure the link expands to the nearest 'relative' parent */
+.stretched-link::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  /* Keeps the main link on layer 1 */
+  content: "";
+}
+
+.content p,
+.content ul li,
+.content ol li {
+  font-size: 1rem;
+  /* This is the standard size for 'text-lg' */
+  line-height: 1.6;
+  /* Ensures the spacing is consistent */
+  margin-bottom: 1rem;
+}
+
+/* Force all text in 'content' blocks to be the same size */
+.content,
+.content p,
+.content li {
+  font-size: 1rem;
+  /* This is the standard size for text-lg */
+  line-height: 1.6;
+}
+
+.display-3 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  /* Responsive sizing: min 2.5rem, max 4rem */
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}

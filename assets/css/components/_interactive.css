@@ -1,0 +1,58 @@
+/* Unified Pill Style for Pagination, Filters, and Sidebar Tags */
+.pill-glass {
+  padding: 8px 20px;
+  border-radius: 50px;
+  background-color: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow-light);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.pill-glass:hover {
+  background-color: var(--glass-bg-light-hover);
+  transform: var(--transformation-hover);
+  box-shadow: var(--glass-shadow-light-hover);
+}
+
+.dark .pill-glass {
+  background-color: var(--glass-bg-dark);
+  box-shadow: var(--glass-shadow-dark);
+  color: var(--glass-text-dark);
+}
+
+.dark .pill-glass:hover {
+  background-color: var(--glass-bg-dark-hover);
+}
+
+/* Social Icons specific sizing */
+.social-icons li a {
+  display: flex;
+  visibility: visible;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  background: var(--glass-bg-light);
+  border-radius: 50%;
+  border: var(--glass-border);
+  transition: var(--transition-smooth);
+  box-shadow: var(--glass-shadow-light);
+  color: var(--glass-text-light);
+
+  &:hover {
+    background: var(--glass-bg-light-hover);
+    box-shadow: var(--glass-shadow-light-hover);
+    transform: var(--transformation-hover);
+  }
+}
+
+.dark .social-icons li a {
+  background: var(--glass-bg-dark);
+  color: var(--glass-text-dark);
+
+  &:hover {
+    background: var(--glass-bg-dark-hover);
+  }
+}

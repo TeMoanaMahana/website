@@ -1,0 +1,21 @@
+:root {
+  --glass-blur: blur(8px);
+  --glass-border: 1px solid rgba(127, 127, 127, 0.2);
+  --glass-bg-light: rgba(255, 255, 255, 0.5);
+  --glass-bg-light-hover: rgba(127, 127, 127, 0.1);
+  --glass-bg-dark: rgba(255, 255, 255, 0.1);
+  --glass-bg-dark-hover: rgba(255, 255, 255, 0.3);
+  --glass-bg-light-active: rgba(127, 127, 127, 0.3);
+  --glass-bg-light-active-hover: rgba(127, 127, 127, 0.5);
+  --glass-bg-dark-active: rgba(255, 255, 255, 0.4);
+  --glass-bg-dark-active-hover: rgba(255, 255, 255, 0.5);
+  --glass-shadow-light: 0 5px 10px rgba(0, 0, 0, 0.1);
+  --glass-shadow-light-hover: 0 5px 15px rgba(0, 0, 0, 0.075);
+  --glass-shadow-dark: 0 0 15px rgba(255, 255, 255, 0.1);
+  --transition-smooth: all 0.3s ease;
+  --glass-text-light: rgba(0, 0, 0, 1);
+  --glass-text-dark: rgba(255, 255, 255, 1);
+  --transformation-hover: translateY(-5px);
+  --radius-card: 40px;
+  --radius-pill: 50px;
+}

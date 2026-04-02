@@ -1,0 +1,11 @@
+/* Target the wrapper AND the image inside it */
+.author-image {
+  width: 100%;
+  max-width: 400px; /* Or whatever size you want */
+  height: auto;
+  border-radius: var(--radius-card); 
+  object-fit: cover;
+  border: var(--glass-border);
+  display: block; /* Removes bottom whitespace gaps */
+}
+

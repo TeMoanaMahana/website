@@ -1,0 +1,195 @@
+{{ define "main" }}
+<!-- Banner -->
+{{ with .Params.banner }}
+<section class="relative py-60 lg:py-60">
+
+  <div class="absolute inset-0 z-0">
+    {{ $image := resources.Get .image }}
+    {{ if $image }}
+    <img src="{{ $image.RelPermalink }}" class="h-full w-full object-cover" alt="{{ .title }}">
+    {{ else }}
+    <div class="h-full w-full bg-navy"></div>
+    {{ end }}
+
+    <div class="absolute inset-0 bg-black/30"></div>
+  </div>
+
+  <div class="absolute left-0 bottom-0 w-full h-[30px] sm:h-[30px] md:h-[60px] lg:h-[80px] z-20 translate-y-[1px]">
+
+    <svg width="0" height="0" class="absolute">
+      <defs>
+        <mask id="mask1" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
+          <g transform="scale(0.000833, 0.00833) rotate(180, 600, 60)">
+            <path
+              d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+              fill="white"></path>
+          </g>
+        </mask>
+        <mask id="mask2" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
+          <g transform="scale(0.000833, 0.00833) rotate(180, 600, 60)">
+            <path
+              d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
+              fill="white"></path>
+          </g>
+        </mask>
+      </defs>
+    </svg>
+
+    <div class="absolute inset-0 backdrop-blur-sm" style="-webkit-mask-image: url(#mask1); mask-image: url(#mask1);">
+      <div class="w-full h-full bg-light/20 dark:bg-darkmode-light/20"></div>
+    </div>
+
+    <div class="absolute inset-0 backdrop-blur-md" style="-webkit-mask-image: url(#mask2); mask-image: url(#mask2);">
+      <div class="w-full h-full bg-light/40 dark:bg-darkmode-light/40"></div>
+    </div>
+
+    <div class="absolute inset-0">
+      <svg class="w-full h-full rotate-180" preserveAspectRatio="none" viewBox="0 0 1200 120">
+        <path
+          d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
+          class="fill-light dark:fill-darkmode-light"></path>
+      </svg>
+    </div>
+
+  </div>
+
+  <div class="dark">
+    <div class="container relative z-30 text-center">
+      <div class="row justify-center">
+        <div class="lg:col-8">
+          <h1 class="mb-6 text-white text-h3 lg:text-h1">
+            {{ .title | markdownify }}
+          </h1>
+          <p class="mb-10 text-white/90 text-xl">
+            {{ .content | markdownify }}
+          </p>
+          <div class="flex flex-wrap justify-center gap-4">
+            {{ with .button }}
+              {{ if .enable }}
+                {{ $latest_post := index (where site.RegularPages "Section" "blog") 0 }}
+                {{ if $latest_post }}
+                  <a class="btn-glass" href="{{ $latest_post.RelPermalink }}">
+                    {{ .label }}
+                    <i class="fa fa-arrow-right pl-2"></i>
+                  </a>
+                {{ else }}
+                  <a class="btn-glass" href="{{ "blog" | relLangURL }}">
+                    {{ .label }}
+                    <i class="fa fa-arrow-right pl-2"></i>
+                  </a>
+                {{ end }}
+              {{ end }}
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{{ end }}
+<!-- /Banner -->
+
+<!-- Features -->
+{{ range $i, $e:= .Params.features }}
+<section class="section-sm {{ if (modBool $i 2) }}bg-gradient{{ end }}">
+  <div class="container">
+    <div class="row items-center justify-between">
+      <div class="mb:md-0 {{ if not (modBool $i 2) }}
+              md:order-2
+            {{ end }} md:col-5 mb-6">
+        {{ partial "image" (dict "Src" .image "Alt" "feature image" "DisplayXL" "520x" "DisplayLG" "425x" "DisplayMD"
+        "360x") }}
+      </div>
+      <div class="{{ if not (modBool $i 2) }}
+              md:order-1
+            {{ end }} md:col-7 lg:col-6">
+        <h2 class="mb-4 text-center sm:text-left">
+          {{ .title | markdownify }}
+        </h2>
+        <p class="mb-8 text-lg text-center sm:text-left">
+          {{ .content | markdownify }}
+        </p>
+        <ul class="sm:text-left">
+          {{ range .bulletpoints }}
+          <li class="relative mb-4 pl-6 text-center sm:text-left">
+            <i class="fa fa-angle-right absolute left-0 top-1.5"></i>
+            {{ . | markdownify }}
+          </li>
+          {{ end }}
+        </ul>
+        {{ with .button }}
+        {{ if .enable }}
+        <div class="text-center sm:text-center lg:text-left">
+          <a class="btn-glass mt-6 sm:mx-auto sm:block sm:w-max" href="{{ .link | relLangURL }}">
+            {{ .label }}
+            <i class="fa fa-arrow-right pl-2"></i>
+          </a>
+        </div>
+        {{ end }}
+        {{ end }}
+      </div>
+    </div>
+  </div>
+</section>
+{{ end }}
+<!-- /Features -->
+
+{{ partial "landing-page-map" . }}
+
+<!-- Testimonials -->
+{{ with site.GetPage "sections/testimonial" }}
+{{ if .Params.enable }}
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="md:col-10 lg:col-8 xl:col-6 mx-auto mb-12 text-center">
+        <h2 class="mb-4">
+          {{ .Title | markdownify }}
+        </h2>
+        <p>
+          {{ .Params.description | markdownify }}
+        </p>
+      </div>
+      <div class="col-12">
+        <div class="swiper testimonial-slider">
+          <div class="swiper-wrapper">
+            {{ range .Params.testimonials }}
+            <div class="swiper-slide">
+              <div class="bg-light dark:bg-darkmode-light rounded-lg px-7 py-10">
+                <div class="text-text-dark dark:text-white">
+                  <svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M1.28375 19.41L0.79375 18.64C1.21375 17.0067 1.75042 15.07 2.40375 12.83C3.05708 10.5433 3.75708 8.28 4.50375 6.04C5.29708 3.75333 6.06708 1.77 6.81375 0.0899959H15.3538C14.9338 2.09666 14.4904 4.26667 14.0238 6.6C13.5571 8.88666 13.1371 11.15 12.7638 13.39C12.4371 15.5833 12.1571 17.59 11.9238 19.41H1.28375ZM31.69 0.0899959L32.18 0.859998C31.76 2.54 31.2233 4.5 30.57 6.74C29.9167 8.98 29.2167 11.2433 28.47 13.53C27.7233 15.77 26.9533 17.73 26.16 19.41H17.69C18.0167 17.9167 18.3433 16.33 18.67 14.65C18.9967 12.9233 19.3 11.22 19.58 9.54C19.9067 7.81333 20.1867 6.15667 20.42 4.57C20.7 2.93666 20.91 1.44333 21.05 0.0899959H31.69Z"
+                      fill="currentColor" />
+                  </svg>
+                </div>
+                <blockquote class="mt-8">
+                  {{ .content | markdownify }}
+                </blockquote>
+                <div class="mt-11 flex items-center">
+                  <div class="text-text-dark dark:text-white">
+                    {{ partial "image" (dict "Src" .avatar "Size" "50x50" "Class" "rounded-full" "Alt" .name) }}
+                  </div>
+                  <div class="ml-4">
+                    <h3 class="h5 font-primary font-semibold">
+                      {{ .name }}
+                    </h3>
+                    <p class="text-text-dark dark:text-white">
+                      {{ .designation | markdownify }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{ end }}
+          </div>
+          <div class="testimonial-slider-pagination mt-9 flex items-center justify-center text-center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{{ end }}
+{{ end }}
+<!-- /Testimonials -->
+{{ end }}

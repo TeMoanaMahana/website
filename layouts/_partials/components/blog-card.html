@@ -1,0 +1,34 @@
+<div class="blog-card-glass relative h-full overflow-hidden flex flex-col group">
+  {{ $image:= .Params.image }}
+  {{ if $image }}
+  <div class="blog-card-img-wrapper">
+    {{ partial "image" (dict "Src" $image "Context" .Page "Alt" .Title "Class" "w-full h-full object-cover" "size" "400x250") }}
+  </div>
+  {{ end }}
+
+  <div class="p-6 flex flex-col flex-grow">
+    <h4 class="mb-1"> {{/* Reduced margin-bottom slightly to bring date closer */}}
+      <a href="{{ .RelPermalink }}" class="blog-card-title stretched-link">
+        {{ .Title }}
+      </a>
+    </h4>
+
+    {{/* Added the Date section here */}}
+    <div class="mb-4 text-sm opacity-60">
+      <i class="fa-regular fa-clock mr-1"></i>
+      <time datetime="{{ .Date.Format "2006-01-02" }}">
+        {{ .Date | time.Format ":date_long" }}
+      </time>
+    </div>
+
+    <p class="mb-6 flex-grow">
+      {{ .Summary | plainify | truncate 150 }}
+    </p>
+
+    <div class="mt-auto">
+      <a href="{{ .RelPermalink }}" class="btn-glass-sm relative z-10">
+        {{ T "read_more" | default "Read More" }}
+      </a>
+    </div>
+  </div>
+</div>

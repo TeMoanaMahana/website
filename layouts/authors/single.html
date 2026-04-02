@@ -1,0 +1,78 @@
+{{ define "main" }}
+<section class="section-sm">
+  <div class="container">
+    <div class="row items-center border-border dark:border-darkmode-border border-b pb-14">
+
+      <div class="md:col-5 mb-8 md:mb-0">
+        {{ $image:= .Params.image }}
+        <div class="author-image-container overflow-hidden flex justify-center">
+          {{ if $image }}
+          {{ partial "image" (dict "Src" $image "Context" .Page "Alt" .Title "Class" "author-image w-full h-auto" "Size"
+          "500x") }}
+          {{ else if .Params.Email }}
+          <img class="author-image w-full h-auto" alt="{{ .Title }}"
+            src="https://www.gravatar.com/avatar/{{ md5 .Params.email }}?s=500&pg&d=identicon" />
+          {{ end }}
+        </div>
+      </div>
+
+      <div class="md:col-7 md:pl-12 text-center lg:text-left">
+        <h1 class="h2 mb-1">{{ .Title }}</h1>
+
+        {{ with .Params.designation }}
+        <span class="text-xs font-bold uppercase tracking-wider mb-6 block opacity-60">
+          {{ . }}
+        </span>
+        {{ end }}
+
+        <div class="content text-lg text-center lg:text-left">
+          {{ .Content }}
+        </div>
+
+        <div class="text-center sm:text-center lg:text-left">
+          {{ range .Params.social }}
+          <a href="{{ .link | safeURL }}" target="_blank" rel="noopener nofollow"
+            class="btn-glass flex flex-wrap gap-3 mr-5 lg:mr-1 mb-4 lg:mr-1">
+            <span class="sr-only">{{ .name }}</span>
+            <i class="{{ .icon }}"></i>
+            {{ if .text }}
+            <span class="text-sm font-medium">{{ .text }}</span>
+            {{ end }}
+          </a>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+
+    {{ if .Params.publications }}
+    <div class="mt-10 text-center sm:text-center lg:text-left">
+      <h3 class="h3 mb-5 font-bold">Recent Publications</h3>
+      <div class="gap-3 sm:gap-6 text-center sm:text-center lg:text-left">
+        {{ range .Params.publications }}
+        <a href="{{ .link | safeURL }}" target="_blank" rel="noopener nofollow"
+          class="btn-glass flex flex-wrap mr-5 lg:mr-1 mb-4 lg:mr-1">
+          <span class="sr-only">{{ .name }}</span>
+          <i class="{{ .icon }}"></i>
+          {{ if .text }}<span class="text-sm font-medium">{{ .text }}</span>
+          {{ end }}
+        </a>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+
+    {{ $filterByAuthor := where site.RegularPages "Params.author" "==" .Title }}
+
+    {{ if gt (len $filterByAuthor) 0 }}
+    <div class="row pt-14 text-center sm:text-center lg:text-left">
+      <h3 class="h3 mb-5 font-bold">Recent Blog Posts</h3>
+      {{ range $filterByAuthor }}
+      <div class="md:col-6 lg:col-4 mb-12 text-left">
+        {{ partial "components/blog-card" . }}
+      </div>
+      {{ end }}
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

@@ -1,0 +1,10 @@
+{
+  "main": [
+    {
+      "name": "Email",
+      "icon": "fa-solid fa-envelope",
+      "link": "mailto:temoanamahana@auckland.ac.nz",
+      "text": "Contact us"
+    }
+  ]
+}

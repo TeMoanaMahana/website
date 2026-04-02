@@ -1,0 +1,23 @@
+.logo-glass-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  padding: 40px;
+  background-color: var(--glass-bg-light);
+  backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-card);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow-light)
+}
+
+.dark .logo-glass-container {
+  box-shadow: var(--glass-shadow-dark);
+}
+
+.partner-logo:hover,
+.org-logo:hover {
+  transition: var(--transition-smooth);
+  transform: var(--transformation-hover);
+}

@@ -1,0 +1,91 @@
+<div class="publication-card-glass group">
+
+  {{/* --- LEFT: Year badge --- */}}
+  <div class="publication-card-year">
+    {{ with .Params.year }}
+      <span class="publication-year-badge">{{ . }}</span>
+    {{ else }}
+      <span class="publication-year-badge">{{ .Date.Format "2006" }}</span>
+    {{ end }}
+  </div>
+
+  {{/* --- MIDDLE: Main content --- */}}
+  <div class="publication-card-body">
+
+    {{/* Title — links externally to DOI, falls back to internal page */}}
+    {{ $extLink := or .Params.doi .Params.url .RelPermalink }}
+    {{ $isExternal := or .Params.doi .Params.url }}
+    <a href="{{ $extLink | safeURL }}"
+       {{ if $isExternal }}target="_blank" rel="noopener nofollow"{{ end }}
+       class="stretched-link">
+      <h4 class="h5 mb-1 transition-colors group-hover:text-primary">
+        {{ .Title }}
+      </h4>
+    </a>
+
+    {{/* Authors — truncate to "First Author et al." if more than 2 */}}
+    {{ with .Params.authors }}
+      {{ $first := index . 0 }}
+      {{ $remainder := after 1 . }}
+      <p class="text-sm font-medium mb-1 opacity-75">
+        {{ if after 1 $remainder }}
+          {{ $first }}, <em>et al.</em>
+        {{ else if $remainder }}
+          {{ $first }}, {{ index $remainder 0 }}
+        {{ else }}
+          {{ $first }}
+        {{ end }}
+      </p>
+    {{ end }}
+
+    {{/* Journal / venue */}}
+    {{ with .Params.journal }}
+      <p class="text-xs italic opacity-60 mb-2">{{ . }}</p>
+    {{ end }}
+
+    {{/* DOI displayed as a visible, copyable link */}}
+    {{ with .Params.doi }}
+      <p class="publication-doi">
+        <span class="publication-doi-label">DOI</span>
+        <a href="{{ . | safeURL }}" target="_blank" rel="noopener nofollow"
+           class="publication-doi-link relative z-10">
+          {{ . | replaceRE "^https://doi.org/" "" }}
+        </a>
+      </p>
+    {{ end }}
+
+    {{/* Abstract / summary */}}
+    {{ with .Summary }}
+      <p class="text-sm opacity-80 publication-abstract mt-2">
+        {{ . | plainify }}
+      </p>
+    {{ end }}
+
+    {{/* Tags */}}
+    {{ with .Params.tags }}
+      <div class="publication-tags mt-3">
+        {{ range . }}
+          <span class="publication-tag">{{ . }}</span>
+        {{ end }}
+      </div>
+    {{ end }}
+
+  </div>
+
+  {{/* --- RIGHT: Action links --- */}}
+  <div class="publication-card-actions">
+    {{ with .Params.doi }}
+      <a href="{{ . | safeURL }}" target="_blank" rel="noopener nofollow"
+         class="btn-glass-sm !py-1.5 !px-4 !text-xs block text-center relative z-10">
+        View
+      </a>
+    {{ end }}
+    {{ with .Params.pdf }}
+      <a href="{{ . | safeURL }}" target="_blank" rel="noopener nofollow"
+         class="btn-glass-sm !py-1.5 !px-4 !text-xs block text-center relative z-10">
+        PDF
+      </a>
+    {{ end }}
+  </div>
+
+</div>

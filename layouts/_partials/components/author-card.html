@@ -1,0 +1,47 @@
+<div class="author-card-glass author-item-slim h-full group">
+  <div class="author-card-img-wrapper">
+    {{ $image:= .Params.image }}
+    {{ if $image }}
+      {{ partial "image" (dict "Src" $image "Context" .Page "Alt" .Title "Class" "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" "size" "400x400") }}
+    {{ else if .Params.Email }}
+      <img
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+        alt="{{ .Title }}"
+        src="https://www.gravatar.com/avatar/{{ md5 .Params.email }}?s=250&pg&d=identicon" />
+    {{ end }}
+  </div>
+
+  <div class="p-5 flex flex-col flex-grow">
+    <a href="{{ .RelPermalink }}" class="stretched-link">
+      <h4 class="h5 mb-1 transition-colors group-hover:text-primary">{{ .Title }}</h4>
+    </a>
+
+    {{ with .Params.designation }}
+      <span class="text-xs font-bold uppercase tracking-wider mb-3 block opacity-60">
+        {{ . }}
+      </span>
+    {{ end }}
+
+    <p class="text-sm opacity-80 text-ellipsis-3 mb-6">
+      {{ .Summary | plainify }}
+    </p>
+
+    <div class="mt-auto flex items-center justify-between relative z-10">
+      <a href="{{ .RelPermalink }}" class="btn-glass-sm !py-1.5 !px-4 !text-xs">
+        Read More
+      </a>
+
+      <ul class="social-icons flex gap-2">
+        {{ if .Params.social }}
+          {{ range first 2 .Params.social }}
+            <li>
+              <a href="{{ .link | safeURL }}" target="_blank" rel="noopener nofollow" class="text-dark dark:text-white hover:text-primary transition-colors">
+                <i class="{{ .icon }} text-base"></i>
+              </a>
+            </li>
+          {{ end }}
+        {{ end }}
+      </ul>
+    </div>
+  </div>
+</div>
