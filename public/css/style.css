@@ -1512,6 +1512,11 @@
       padding-left: calc(var(--spacing) * 12);
     }
   }
+  .md\:text-left {
+    @media (width >= 48rem) {
+      text-align: left;
+    }
+  }
   .lg\:invisible {
     @media (width >= 64rem) {
       visibility: hidden;
@@ -1565,6 +1570,11 @@
   .lg\:col-8 {
     @media (width >= 64rem) {
       grid-column: 8;
+    }
+  }
+  .lg\:col-9 {
+    @media (width >= 64rem) {
+      grid-column: 9;
     }
   }
   .lg\:col-10 {
@@ -1650,6 +1660,12 @@
     @media (width >= 64rem) {
       flex: 0 0 auto;
       width: 66.66666666666667%;
+    }
+  }
+  .lg\:col-9 {
+    @media (width >= 64rem) {
+      flex: 0 0 auto;
+      width: 75%;
     }
   }
   .lg\:col-10 {

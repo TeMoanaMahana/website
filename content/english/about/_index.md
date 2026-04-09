@@ -2,7 +2,7 @@
 title: "About the Project"
 meta_title: "About"
 description: ""
-image: "images/team/teamPhoto.png"
+image: "images/team/team-about.png"
 partners:
   statement: ""
   list:

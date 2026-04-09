@@ -12,7 +12,7 @@ banner:
 # Features (Repurposed for Stats and About sections)
 features:
   - title: "About the Project"
-    image: "/images/team/teamPhoto.png" # You can add a relevant image here
+    image: "/images/team/team-home.png" # You can add a relevant image here
     content:
       "Oceans affect everything in New Zealand – from  local weather to the productivity of our industries.
       <br></br>  

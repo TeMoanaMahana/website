@@ -93,25 +93,20 @@
 {{ range $i, $e:= .Params.features }}
 <section class="section-sm {{ if (modBool $i 2) }}bg-gradient{{ end }}">
   <div class="container">
-    <div class="row items-center justify-between">
-      <div class="mb:md-0 {{ if not (modBool $i 2) }}
-              md:order-2
-            {{ end }} md:col-5 mb-6">
-        {{ partial "image" (dict "Src" .image "Alt" "feature image" "DisplayXL" "520x" "DisplayLG" "425x" "DisplayMD"
-        "360x") }}
+    <div class="row items-center justify-center">
+      <div class="col-12 mb-6 md:col-6 {{ if not (modBool $i 2) }}md:order-2{{ end }}">
+        {{ partial "image" (dict "Src" .image "Alt" "feature image" "DisplayXL" "1080x" "DisplayLG" "1080x" "DisplayMD" "1080x") }}
       </div>
-      <div class="{{ if not (modBool $i 2) }}
-              md:order-1
-            {{ end }} md:col-7 lg:col-6">
-        <h2 class="mb-4 text-center sm:text-left">
+      <div class="col-12 md:col-6 lg:col-6 {{ if not (modBool $i 2) }}md:order-1{{ end }}">
+        <h2 class="mb-4 text-center md:text-left">
           {{ .title | markdownify }}
         </h2>
-        <p class="mb-8 text-lg text-center sm:text-left">
+        <p class="mb-8 text-lg text-center md:text-left">
           {{ .content | markdownify }}
         </p>
-        <ul class="sm:text-left">
+        <ul class="md:text-left">
           {{ range .bulletpoints }}
-          <li class="relative mb-4 pl-6 text-center sm:text-left">
+          <li class="relative mb-4 pl-6 text-center md:text-left">
             <i class="fa fa-angle-right absolute left-0 top-1.5"></i>
             {{ . | markdownify }}
           </li>

@@ -2,10 +2,10 @@
   <section class="section-sm">
     <div class="container">
       <div class="row justify-center text-center">
-        <div class="md:col-10 lg:col-8">
+        <div class="md:col-10 lg:col-9">
           {{ if .Params.image }}
           <div class="mb-8">
-            {{ partial "image" (dict "Src" .Params.image "Context" .Page "Alt" .Title "Class" "rounded-lg shadow mx-auto" "Size" "800x") }}
+            {{ partial "image" (dict "Src" .Params.image "Context" .Page "Alt" .Title "Class" "rounded-lg mx-auto" "Size" "1600x") }}
           </div>
           {{ end }}
           <h2 class="h2 mb-6">{{ .Title }}</h2>
