@@ -1,14 +1,10 @@
-/* ─── Header ───────────────────────────────────────────────────────────────
-   The blur MUST live on ::before, NOT on the header element itself.
-   Any element with backdrop-filter becomes a "backdrop root" — meaning
-   its children's backdrop-filter samples from *that* root's content rather
-   than the real page behind it, making child blurs invisible.
-   Putting the blur on ::before sidesteps this entirely.
-─────────────────────────────────────────────────────────────────────────── */
+/* Navigation styles */
+
+/* Header */
 
 header.header {
   background: transparent;
-  /* ::before supplies the visible background  */
+  /* Background via ::before */
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   transition: var(--transition-smooth);
 }
@@ -18,7 +14,7 @@ header.header::before {
   position: absolute;
   inset: 0;
   z-index: -1;
-  /* Sits behind nav content, above page       */
+  /* Behind nav, above page */
   background-color: rgba(255, 255, 255, 0.75);
   -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
@@ -29,7 +25,7 @@ header.header::before {
   background-color: color-mix(in srgb, var(--color-darkmode-light), transparent 30%);
 }
 
-/* ─── Nav links ─────────────────────────────────────────────────────────── */
+/* Nav links */
 
 .nav-link {
   display: inline-block;
@@ -44,10 +40,7 @@ header.header::before {
   font-weight: 600;
 }
 
-/* ─── Dropdown ──────────────────────────────────────────────────────────────
-   backdrop-filter now works correctly because the header element itself
-   is no longer a backdrop root — its blur lives on ::before instead.
-─────────────────────────────────────────────────────────────────────────── */
+/* Dropdown */
 
 .nav-dropdown-list {
   @apply lg:absolute lg:top-full lg:left-0;
@@ -68,7 +61,7 @@ header.header::before {
   background-color: color-mix(in srgb, var(--color-darkmode-light), transparent 30%);
 }
 
-/* Invisible hover bridge — prevents dropdown closing when mousing over the gap */
+/* Hover bridge - prevents dropdown flicker */
 .nav-dropdown-list::before {
   content: "";
   position: absolute;

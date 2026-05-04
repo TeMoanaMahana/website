@@ -1,3 +1,4 @@
+{{/* Blog card component */}}
 <div class="blog-card-glass relative h-full overflow-hidden flex flex-col group">
   {{ $image:= .Params.image }}
   {{ if $image }}
@@ -7,13 +8,13 @@
   {{ end }}
 
   <div class="p-6 flex flex-col flex-grow">
-    <h4 class="mb-1"> {{/* Reduced margin-bottom slightly to bring date closer */}}
+    <h4 class="mb-1">
       <a href="{{ .RelPermalink }}" class="blog-card-title stretched-link">
         {{ .Title }}
       </a>
     </h4>
 
-    {{/* Added the Date section here */}}
+    {{/* Date */}}
     <div class="mb-4 text-sm opacity-60">
       <i class="fa-regular fa-clock mr-1"></i>
       <time datetime="{{ .Date.Format "2006-01-02" }}">

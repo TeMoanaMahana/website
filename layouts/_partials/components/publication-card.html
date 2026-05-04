@@ -1,6 +1,7 @@
+{{/* Publication card component */}}
 <div class="publication-card-glass group">
 
-  {{/* --- LEFT: Year badge --- */}}
+  {{/* Year column */}}
   <div class="publication-card-year">
     {{ with .Params.year }}
       <span class="publication-year-badge">{{ . }}</span>
@@ -9,10 +10,10 @@
     {{ end }}
   </div>
 
-  {{/* --- MIDDLE: Main content --- */}}
+  {{/* Body column */}}
   <div class="publication-card-body">
 
-    {{/* Title — links externally to DOI, falls back to internal page */}}
+    {{/* Title */}}
     {{ $extLink := or .Params.doi .Params.url .RelPermalink }}
     {{ $isExternal := or .Params.doi .Params.url }}
     <a href="{{ $extLink | safeURL }}"
@@ -23,7 +24,7 @@
       </h4>
     </a>
 
-    {{/* Authors — truncate to "First Author et al." if more than 2 */}}
+    {{/* Authors */}}
     {{ with .Params.authors }}
       {{ $first := index . 0 }}
       {{ $remainder := after 1 . }}
@@ -38,12 +39,12 @@
       </p>
     {{ end }}
 
-    {{/* Journal / venue */}}
+    {{/* Journal */}}
     {{ with .Params.journal }}
       <p class="text-xs italic opacity-60 mb-2">{{ . }}</p>
     {{ end }}
 
-    {{/* DOI displayed as a visible, copyable link */}}
+    {{/* DOI */}}
     {{ with .Params.doi }}
       <p class="publication-doi">
         <span class="publication-doi-label">DOI</span>
@@ -54,7 +55,7 @@
       </p>
     {{ end }}
 
-    {{/* Abstract / summary */}}
+    {{/* Abstract */}}
     {{ with .Summary }}
       <p class="text-sm opacity-80 publication-abstract mt-2">
         {{ . | plainify }}
@@ -72,7 +73,7 @@
 
   </div>
 
-  {{/* --- RIGHT: Action links --- */}}
+  {{/* Actions column */}}
   <div class="publication-card-actions">
     {{ with .Params.doi }}
       <a href="{{ . | safeURL }}" target="_blank" rel="noopener nofollow"

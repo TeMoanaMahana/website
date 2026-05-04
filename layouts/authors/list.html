@@ -1,9 +1,11 @@
+{{/* Authors list page */}}
 {{ define "main" }}
 {{ partial "page-header" . }}
 
 <section class="section">
   <div class="container">
 
+    {{/* Group by role */}}
     {{ if .Params.group_by_role }}
     {{ range .RegularPages.GroupByParam "user_groups" }}
     <div class="row">
@@ -23,7 +25,7 @@
     {{ end }}
 
     {{ else }}
-    {{/* --- OPTION B: DEMOCRATIZED VIEW WITH user_groups FILTERS --- */}}
+    {{/* Filter by group */}}
 
     <div class="flex flex-wrap justify-center gap-3 mb-12">
       <button class="btn-glass active-btn-glass" data-filter="all">All Members</button>
@@ -46,7 +48,7 @@
 
     <div class="row" id="author-grid">
       {{ range .RegularPages.ByParam "last_name" }}
-      {{/* We turn the user_groups list into a space-separated string of slugified names */}}
+      {{/* Convert user_groups for filtering */}}
       {{ $itemGroups := "" }}
       {{ with .Params.user_groups }}
       {{ if reflect.IsSlice . }}

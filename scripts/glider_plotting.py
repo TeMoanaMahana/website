@@ -6,8 +6,7 @@ import gsw
 import re
 import sys
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
-# When run from the repo root by GitHub Actions (or locally from repo root)
+# Paths
 INPUT_FILE  = Path("static/data/glider_data_processed.csv")
 OUTPUT_DIR  = Path("static/images/glider")          # Hugo serves everything in static/
 
@@ -18,16 +17,16 @@ if len(sys.argv) >= 3:
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# ── Style ─────────────────────────────────────────────────────────────────────
+# Style
 label_size  = 12
 tick_size   = 10
 font_weight = "bold"
 
-# ── Load ──────────────────────────────────────────────────────────────────────
+# Load data
 df = pd.read_csv(INPUT_FILE)
 df = df.rename(columns={
     "Temperature [degC]":        "Temperature (°C)",
-    "Salinity [psu]":            "Salinity (PSU)",          # ← was 'Sanility' (typo fixed)
+    "Salinity [psu]":            "Salinity (PSU)",
     "PAR [microE/m2/s]":         "PAR (µmol photons/m²/s)",
     "CDOM [ppb]":                "Coloured Dissolved Organic Matter (ppb)",
     "Backscatter (700nm)":       "Optical Backscatter (700nm)",
@@ -43,7 +42,7 @@ cmap_map = {
     "Chlorophyll-a (µg/L)":                      "BuGn",
 }
 
-# ── Derived columns ───────────────────────────────────────────────────────────
+# Derived columns
 time     = pd.to_datetime(df.iloc[:, 1], unit="s", utc=True).dt.tz_convert("Pacific/Auckland")
 pressure = df.iloc[:, 4]
 lat_val  = df.iloc[:, 3].median()
@@ -56,7 +55,7 @@ mask2   = depth.notna()
 time_p  = time[mask][mask2]
 depth_p = depth[mask2]
 
-# ── Plot each variable ────────────────────────────────────────────────────────
+# Plot each variable
 saved_files = []
 
 for col in data_cols:

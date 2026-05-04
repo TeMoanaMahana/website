@@ -1,3 +1,5 @@
+/* Glass morphology CSS variables */
+
 :root {
   --glass-blur: blur(8px);
   --glass-border: 1px solid rgba(127, 127, 127, 0.2);

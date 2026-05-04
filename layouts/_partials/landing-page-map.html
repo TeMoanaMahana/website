@@ -1,3 +1,4 @@
+{{/* NOAA SST anomaly map */}}
 <section class="section">
   <div class="container">
     <div class="row">
@@ -10,7 +11,7 @@
           <div 
             id="noaaMap" 
             class="rounded-xl shadow-lg border border-border z-0" 
-            style="height: 600px; width: 100%; min-width: 100%;">
+            style="height: 600px; width: 100%; min-width: 100%; position: relative;">
           </div>
         </div>
 
@@ -23,12 +24,14 @@
                     crs: L.CRS.EPSG4326,
                     center: [-41.2710849, 173.2836756],
                     zoom: 3,
-                    scrollWheelZoom: false
+                    scrollWheelZoom: false,
+                    dragging: !L.Browser.mobile,
+                    tap: false
                 });
 
                 L.control.scale({ imperial: false }).addTo(map);
 
-                // --- Ctrl/Cmd scroll-to-zoom ---
+                // Scroll hint
                 const container = map.getContainer();
 
                 const hint = document.createElement('div');
@@ -44,7 +47,7 @@
                     transition:    'opacity 0.2s',
                     zIndex:        '1000',
                 });
-                container.style.position = 'relative'; // ensure hint positions inside map
+                container.style.position = 'relative';
                 container.appendChild(hint);
 
                 let hintTimeout;
@@ -65,7 +68,157 @@
                     }
                 }, { passive: false });
 
-                // --- WMS layer ---
+                const touchHint = document.createElement('div');
+                touchHint.textContent = 'Use two fingers to pan the map';
+                touchHint.className = 'map-glass-light';
+                Object.assign(touchHint.style, {
+                    position:      'absolute',
+                    top:           '50%',
+                    left:          '50%',
+                    transform:     'translate(-50%, -50%)',
+                    pointerEvents: 'none',
+                    opacity:       '0',
+                    transition:    'opacity 0.2s',
+                    zIndex:        '1000',
+                    whiteSpace:    'nowrap',
+                });
+                container.appendChild(touchHint);
+
+                let touchHintTimeout;
+                function showTouchHint() {
+                    touchHint.style.opacity = '1';
+                    clearTimeout(touchHintTimeout);
+                    touchHintTimeout = setTimeout(() => { touchHint.style.opacity = '0'; }, 1500);
+                }
+
+                container.addEventListener('touchstart', function(e) {
+                    if (e.touches.length === 2) {
+                        // Two fingers — enable map panning
+                        map.dragging.enable();
+                    } else {
+                        // One finger — disable map panning, let page scroll
+                        map.dragging.disable();
+                        showTouchHint();
+                    }
+                }, { passive: true });
+
+                container.addEventListener('touchend', function(e) {
+                    // When fingers lift, re-disable dragging so next single-touch scrolls page
+                    if (e.touches.length < 2) {
+                        map.dragging.disable();
+                    }
+                }, { passive: true });
+
+                let touchHintDelay;
+
+                container.addEventListener('touchstart', function(e) {
+                    if (e.touches.length === 2) {
+                        map.dragging.enable();
+                        clearTimeout(touchHintDelay);          // ← cancel the pending hint
+                        touchHint.style.opacity = '0';         // ← hide it if it snuck through
+                    } else {
+                        map.dragging.disable();
+                        touchHintDelay = setTimeout(() => showTouchHint(), 80);  // ← small delay before showing
+                    }
+                }, { passive: true });
+
+                // Colorbar
+                const colorbar = document.createElement('div');
+                colorbar.className = 'map-glass-light';
+                Object.assign(colorbar.style, {
+                    position:        'absolute',
+                    top:             '50%',
+                    right:           '12px',
+                    transform:       'translateY(-50%)',
+                    zIndex:          '1000',
+                    padding:         '10px 8px',
+                    display:         'flex',
+                    alignItems:      'center',
+                    justifyContent:  'center',
+                    pointerEvents:   'none',
+                    borderRadius:    '25px',
+                    transition:      'opacity 0.25s, transform 0.25s',
+                });
+
+                const img = document.createElement('img');
+                img.src = 'images/ssta-colorbar.png';
+                img.alt = 'SST Anomaly colorbar';
+                Object.assign(img.style, {
+                    display:   'block',
+                    width:     'auto',
+                    height:    'auto',
+                    maxHeight: '480px',
+                    maxWidth:  '80px',
+                });
+
+                colorbar.appendChild(img);
+                container.appendChild(colorbar);
+
+                // Mobile toggle
+                const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+                let colorbarVisible = true;
+
+                const toggleBtn = document.createElement('button');
+                toggleBtn.className = 'map-glass-light';
+                toggleBtn.innerHTML = '<i class="fa-regular fa-chart-bar"></i>';
+                toggleBtn.title = 'Toggle colorbar';
+                Object.assign(toggleBtn.style, {
+                    position:        'absolute',
+                    top:             '12px',
+                    right:           '12px',
+                    zIndex:          '1001',
+                    width:           '34px',
+                    height:          '34px',
+                    display:         'none',
+                    alignItems:      'center',
+                    justifyContent:  'center',
+                    fontSize:        '16px',
+                    cursor:          'pointer',
+                    border:          'none',
+                    borderRadius:    '25px',
+                    padding:         '0',
+                    lineHeight:      '1',
+                });
+
+                toggleBtn.addEventListener('click', function() {
+                    colorbarVisible = !colorbarVisible;
+                    colorbar.style.opacity  = colorbarVisible ? '1' : '0';
+                    colorbar.style.pointerEvents = colorbarVisible ? 'none' : 'none';
+                    // Slide off to the right when hidden
+                    colorbar.style.transform = colorbarVisible
+                        ? 'translateY(-50%)'
+                        : 'translateY(-50%) translateX(20px)';
+                    toggleBtn.innerHTML = colorbarVisible ? '<i class="fa-regular fa-chart-bar"></i>' : '<i class="fa-regular fa-chart-bar"></i>';
+                    toggleBtn.title = colorbarVisible ? 'Hide colorbar' : 'Show colorbar';
+                });
+
+                container.appendChild(toggleBtn);
+
+                // Responsive toggle
+                function applyResponsiveState() {
+                    if (isMobile()) {
+                        toggleBtn.style.display  = 'flex';
+                        // Start hidden on mobile
+                        if (colorbarVisible) {
+                            colorbarVisible = false;
+                            colorbar.style.opacity   = '0';
+                            colorbar.style.transform = 'translateY(-50%) translateX(20px)';
+                            toggleBtn.innerHTML = '<i class="fa-regular fa-chart-bar"></i>';
+                            toggleBtn.title = 'Show colorbar';
+                        }
+                    } else {
+                        toggleBtn.style.display  = 'none';
+                        // Always visible on desktop
+                        colorbarVisible = true;
+                        colorbar.style.opacity   = '1';
+                        colorbar.style.transform = 'translateY(-50%)';
+                    }
+                }
+
+                applyResponsiveState();
+                window.addEventListener('resize', applyResponsiveState);
+
+                // NOAA WMS layer
                 const baseUrl = 'https://pae-paha.pacioos.hawaii.edu/erddap/wms/dhw_5km/request?';
                 L.tileLayer.wms(baseUrl, {
                     layers: 'dhw_5km:CRW_SSTANOMALY',
@@ -75,7 +228,7 @@
                     attribution: 'NOAA Coral Reef Watch (CRW)'
                 }).addTo(map);
 
-                // --- Land vectors (wrapped) ---
+                // Land boundaries
                 const landStyle = {
                     fillColor: "#2c3e50",
                     fillOpacity: 1,

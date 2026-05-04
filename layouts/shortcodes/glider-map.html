@@ -1,3 +1,4 @@
+{{/* Glider map shortcode - interactive glider track map */}}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
 <div class="flex justify-center w-full">
@@ -37,13 +38,15 @@
     }
 
     const map = L.map('gliderMap', {
-        scrollWheelZoom: false
+        scrollWheelZoom: false,
+        dragging: !L.Browser.mobile,   // ← ADD
+        tap: false                      // ← ADD
     }).setView([-43.07, 173.48], 8);
 
     map.createPane('tickPane').style.zIndex = 450;
     map.createPane('arrowPane').style.zIndex = 440;
 
-    // --- Ctrl/Cmd scroll-to-zoom hint ---
+    // Scroll hint
     const container = map.getContainer();
 
     const hint = document.createElement('div');
@@ -79,6 +82,47 @@
             showHint();
         }
     }, { passive: false });
+
+    const touchHint = document.createElement('div');
+    touchHint.textContent = 'Use two fingers to pan the map';
+    touchHint.className = 'map-glass-light';
+    Object.assign(touchHint.style, {
+        position:      'absolute',
+        top:           '50%',
+        left:          '50%',
+        transform:     'translate(-50%, -50%)',
+        pointerEvents: 'none',
+        opacity:       '0',
+        transition:    'opacity 0.2s',
+        zIndex:        '1000',
+        whiteSpace:    'nowrap',
+    });
+    container.appendChild(touchHint);
+
+    let touchHintTimeout;
+    let touchHintDelay;
+    function showTouchHint() {
+        touchHint.style.opacity = '1';
+        clearTimeout(touchHintTimeout);
+        touchHintTimeout = setTimeout(() => { touchHint.style.opacity = '0'; }, 1500);
+    }
+
+    container.addEventListener('touchstart', function(e) {
+        if (e.touches.length === 2) {
+            map.dragging.enable();
+            clearTimeout(touchHintDelay);
+            touchHint.style.opacity = '0';
+        } else {
+            map.dragging.disable();
+            touchHintDelay = setTimeout(() => showTouchHint(), 80);
+        }
+    }, { passive: true });
+
+    container.addEventListener('touchend', function(e) {
+        if (e.touches.length < 2) {
+            map.dragging.disable();
+        }
+    }, { passive: true });
 
     L.control.scale({ imperial: false }).addTo(map);
 
@@ -123,9 +167,7 @@
       interactive: true
     }).addTo(map);
 
-    // ── Plot names and labels for the popup ──────────────────────────────────
-    // Keys must match filenames produced by glider_plotting.py exactly:
-    // the script strips everything from '(' or '[' onward, then replaces spaces with '_'.
+    // Plot config - keys match glider_plotting.py output
     const PLOT_BASE = '{{ "images/glider/" | relURL }}';
     const PLOTS = [
       { key: 'Temperature',                      label: 'Temperature' },
@@ -223,8 +265,7 @@
 
         const rows = text.trim().split(/\r?\n/);
 
-        // Skip only the header row (row 0).
-        // Processed CSV columns: 0=Day_Index, 1=Timestamp(UTC), 2=Longitude, 3=Latitude
+        // Parse CSV - skip header, cols: Day_Index, Timestamp, Longitude, Latitude
         const coordRows = rows
           .slice(1)
           .map(row => {
@@ -269,7 +310,7 @@
         trackPath.setLatLngs(history);
         trackPathHitbox.setLatLngs(history);
 
-        // ── Directional arrows spaced by real-world distance ──────────────────
+        // Directional arrows
         const ARROW_SPACING_M = 10000;
 
         arrowLayer.clearLayers();
@@ -298,7 +339,7 @@
           }
         }
 
-        // ── Rotate & reposition glider marker ────────────────────────────────
+        // Rotate glider marker
         const newPos = history[history.length - 1];
 
         if (history.length >= 2) {

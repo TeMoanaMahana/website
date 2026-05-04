@@ -31,7 +31,7 @@ With the **Maui Ocean Heat Content Mission** we are embarking on a five-year mis
 
 <div class="float-left w-1/4 ml-1 mb-1 mr-4">
   {{< image src="images/gallery/oceanAtmosProc.png" alt="Ocean-atmosphere processes" class="rounded-lg" >}}
-  <p class="text-xs text-center italic mr-4">Connecting the deep ocean to what happens on land.</p>
+  <p class="text-xs text-center italic mr-4">Connecting the deep ocean to what happens on land. (Gabby O'Connor)</p>
 </div>
 
 ### Why?

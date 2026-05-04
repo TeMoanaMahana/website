@@ -1,7 +1,4 @@
-/* =====================================================
-   PUBLICATION CARD — glass list variant
-   Same variables as .author-card-glass, horizontal layout
-   ===================================================== */
+/* Publication card styles */
 
 .publication-card-glass {
   background-color: var(--glass-bg-light);
@@ -16,7 +13,7 @@
   cursor: pointer;
   color: var(--glass-text-light);
 
-  /* Horizontal flex layout — the key difference from author cards */
+  /* Horizontal flex layout */
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -79,10 +76,10 @@
   flex: 1 1 auto;
   padding: 1.25rem 1.5rem;
   min-width: 0;
-  /* prevents text overflow blowout */
+  /* Prevent overflow */
 }
 
-/* Clamp abstract to 3 lines */
+/* 3-line clamp */
 .publication-abstract {
   display: -webkit-box;
   -webkit-line-clamp: 3;

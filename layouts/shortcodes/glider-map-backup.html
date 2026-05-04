@@ -40,10 +40,10 @@
         scrollWheelZoom: false
     }).setView([-43.07, 173.48], 8);
 
-    map.createPane('tickPane').style.zIndex = 450;  // above tiles (200) and polylines (400), below markers (600)
+    map.createPane('tickPane').style.zIndex = 450;  // Above tiles, below markers
     map.createPane('arrowPane').style.zIndex = 440;
 
-    // --- Ctrl/Cmd scroll-to-zoom ---
+    // Scroll hint
     const container = map.getContainer();
 
     const hint = document.createElement('div');
@@ -117,10 +117,10 @@
       lineJoin: 'round'
     }).addTo(map);
 
-    // ── Layer group for day-boundary tick marks ───────────────────────────────
+    // Day boundary ticks
     let divePointsLayer = L.layerGroup().addTo(map);
 
-    // ── Layer group for directional arrow markers ─────────────────────────────
+    // Directional arrows
     let arrowLayer = L.layerGroup().addTo(map);
 
     const popupContent = `
@@ -144,7 +144,7 @@
 
         const rows = text.trim().split(/\r?\n/);
 
-        // Parse all rows that have coordinates (col 0=Day_Index, 2=Lon, 3=Lat)
+        // Parse CSV rows
         const coordRows = rows
           .slice(2)
           .map(row => {
@@ -163,13 +163,11 @@
 
         const history = coordRows.map(r => [r.lat, r.lng]);
 
-        // ── Draw polyline ─────────────────────────────────────────────────────
+        // Draw polyline
         trackPath.setLatLngs(history);
 
-        // ── Directional arrows spaced by real-world distance ──────────────────
-        // Accumulates haversine metres so arrows are evenly spread geographically,
-        // regardless of how clustered the GPS surfacing fixes are.
-        const ARROW_SPACING_M = 7500; // metres between arrows — adjust to taste
+        // Directional arrows
+        const ARROW_SPACING_M = 7500; // Arrow spacing in meters
 
         arrowLayer.clearLayers();
         let distAccum = ARROW_SPACING_M / 2; // offset so first arrow isn't right at the start

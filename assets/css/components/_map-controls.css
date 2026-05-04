@@ -1,4 +1,6 @@
-/* --- Map overlay: always light glass regardless of theme --- */
+/* Map control styles */
+
+/* Map overlay */
 .map-glass-light {
   background-color: var(--glass-bg-light);
   backdrop-filter: var(--glass-blur);

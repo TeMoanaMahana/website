@@ -1,10 +1,11 @@
+{{/* Publications list page */}}
 {{ define "main" }}
 {{ partial "page-header" . }}
 
 <section class="section">
   <div class="container">
 
-    {{/* --- FILTER BUTTONS (optional, mirrors your author filter pattern) --- */}}
+    {{/* Filter buttons */}}
     {{ $allTags := slice }}
     {{ range .RegularPages }}
       {{ range .Params.tags }}
@@ -21,7 +22,7 @@
     </div>
     {{ end }}
 
-    {{/* --- PUBLICATIONS LIST (newest first) --- */}}
+    {{/* Publications sorted by year */}}
     <div class="row" id="publications-grid">
       {{ range sort .RegularPages "Params.year" "desc" }}
 

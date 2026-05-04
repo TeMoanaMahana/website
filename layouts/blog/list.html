@@ -3,7 +3,7 @@
 
 <section class="section">
   <div class="container">
-    <!-- Collapsible sidebar for mobile -->
+
     <div class="mb-8 lg:hidden container">
       <button id="toggle-sidebar-mobile" class="btn-glass py-3 px-4 flex justify-between items-center">
         <span>Filters</span>
@@ -13,21 +13,18 @@
       </button>
 
       <div id="mobile-sidebar-content" class="mt-2 overflow-hidden transition-all duration-300 max-h-0 lg:max-h-screen">
-        <!-- widget -->
         {{ $widget:= site.Params.widgets.sidebar }}
         {{ partialCached "widgets/widget-wrapper" ( dict "Widgets" $widget "Scope" . ) }}
       </div>
     </div>
 
     <div class="row gx-5">
-      <!-- sidebar - visible on desktop -->
       <div class="lg:col-4 hidden lg:block">
-        <!-- widget -->
         {{ $widget:= site.Params.widgets.sidebar }}
         {{ partialCached "widgets/widget-wrapper" ( dict "Widgets" $widget "Scope" . ) }}
       </div>
 
-      <!-- blog posts -->
+
       <div class="lg:col-8 order-last lg:order-first">
         <div class="row">
           {{ $paginator:= .Paginate .RegularPages }}
@@ -54,18 +51,18 @@
         const isOpen = sidebarContent.classList.contains('max-h-0');
 
         if (isOpen) {
-          // Open the sidebar
+          // Open
           sidebarContent.classList.remove('max-h-0');
           sidebarContent.style.maxHeight = sidebarContent.scrollHeight + 'px';
           chevron.classList.add('rotate-180');
           toggleBtn.classList.add('active-btn-glass');
         } else {
-          // Close the sidebar
+          // Close
           sidebarContent.style.maxHeight = '0';
           chevron.classList.remove('rotate-180');
           toggleBtn.classList.remove('activate-btn-glass');
 
-          // Reset max-height after transition completes
+          // Reset height after transition
           setTimeout(() => {
             if (!sidebarContent.classList.contains('max-h-0')) {
               sidebarContent.classList.add('max-h-0');
