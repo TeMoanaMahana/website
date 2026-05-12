@@ -8,7 +8,7 @@ Hugo is designed for simplicity and thus modification of this website is relativ
 
 Before getting started, make sure you have the following installed on your machine:
 
-- **Git** — required to clone the repository. Download it from [git-scm.com](https://git-scm.com/downloads) and follow the install instructions for your operating system.
+- **Git** is required to clone the repository. Download it from [git-scm.com](https://git-scm.com/downloads) and follow the install instructions for your operating system.
 - A **terminal** (macOS/Linux) or **PowerShell** (Windows)
 
 ## Folders and Purposes
