@@ -125,13 +125,13 @@ This step does require the use of the terminal. The terminal is an essential par
 1. Clone this repository by running the following command in your terminal:
 
 ```
-git clone https://github.com/your-org/your-repo-name.git
+git clone https://github.com/TeMoanaMahana/website.git
 ```
 
 2. Navigate into the cloned repository:
 
 ```
-cd your-repo-name
+cd website
 ```
 
 ### UNIX
