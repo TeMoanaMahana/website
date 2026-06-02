@@ -3,7 +3,7 @@ title: "Alain de Verneil"
 last_name: "de Verneil"
 designation: "Key Researcher"
 user_groups: "Key Researchers"
-image: "images/team/inconnu.png"
+image: "images/team/alain-de-verneil.jpg"
 social:
   - icon: "fa-solid fa-book-open"
     link: "https://niwa.co.nz/people/alain-de-verneil"
