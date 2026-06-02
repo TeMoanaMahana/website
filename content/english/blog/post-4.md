@@ -24,7 +24,7 @@ The accepted candidate **will**:
  - Be funded for a full PhD scholarship of 3.5 years (fees + stipend, subject to funding conditions). Please note that the scholarship will not be extended beyond this.
  - Be supervised by Prof. Craig Stevens and Assoc. Prof. Melissa Bowen.
 
-Please find more details in the [attached .pdf file](/documents/phd-physics-oceanheat_V2.pdf). Please contact [Craig Stevens](mailto:craig.stevens@earthsciences.nz) if you require more information.
+Please find more details in the [attached .pdf file](/static/documents/phd-physics-oceanheat_V2.pdf). Please contact [Craig Stevens](mailto:craig.stevens@earthsciences.nz) if you require more information.
 
 #### 2. Impact of extreme events on physical-biological interactions and primary productivity in Aotearoa's coastal ocean
 
