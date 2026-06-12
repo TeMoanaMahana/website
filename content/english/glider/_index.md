@@ -6,17 +6,20 @@ layout: "single"
 
 # The glider is underway!
 
-Click on the link below to see what an ocean glider is and how it works:
-
-**See the Earth Science New Zealand page on Ocean Gliders here:** [Ocean Gliders](https://niwa.co.nz/oceans/ocean-gliders)
-
-Additionally, you can take a look at the information on the **Maui Ocean Heat Content Mission** below the map.
-
 <div class="glider-map">
   {{< glider-map >}}
 </div>
 
+###### See 3D Plots of the Collected Data Below:
+
+- [Kaikōura Canyon and Hikurangi Trough System (Kaikōura)](/images/glider/3d_kaikoura.html)
+- [Cook Strait Canyon System (Wellington)](/images/glider/3d_wellington.html)
+
+*Please note that vertical scale in the above plots is not the same as the horizontal scale and is different between the land and ocean. The vertical scale of the ocean is increase 25x compared to the land.* ***Please see the axis values for details for elevation and horizontal distances.***
+
 ## The Maui Ocean Heat Content Mission
+
+**See the Earth Science New Zealand page on Ocean Gliders here:** [Ocean Gliders](https://niwa.co.nz/oceans/ocean-gliders)
 
 <div class="float-right w-1/3 ml-6 mb-4">
   {{< image src="images/gallery/glider.png" alt="Glider in the Ocean" class="rounded-lg" >}}
