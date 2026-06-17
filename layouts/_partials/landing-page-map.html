@@ -1,4 +1,4 @@
-{{/* NOAA SST anomaly map */}}
+{{/* Copernicus Marine SST anomaly map */}}
 <section class="section">
   <div class="container">
     <div class="row">
@@ -9,15 +9,15 @@
 
         <div class="flex justify-center w-full">
           <div 
-            id="noaaMap" 
+            id="sstAnomalyMap" 
             class="rounded-xl shadow-lg border border-border z-0" 
             style="height: 600px; width: 100%; min-width: 100%; position: relative;">
           </div>
         </div>
 
         <p class="mt-4 text-center text-sm">
-          The anomaly is today's sea surface temperature compared to a fixed late-1980s (1985-1990 + 1993) baseline, estimated using 28 years of satellite data (1985-2012). Warm colours indicate warmer than baseline conditions; cool colours indicate cooler. Data is updated daily courtesy of <a href="https://pae-paha.pacioos.hawaii.edu/erddap/wms/dhw_5km/index.html" target="_blank" rel="noopener" class="underline">NOAA Coral Reef Watch (CRW)</a>.
-          Read more on the <a href="https://coralreefwatch.noaa.gov/product/5km/methodology.php" target="_blank" rel="noopener" class="underline">NOAA CRW Methodology page</a>.
+          The anomaly is today's sea surface temperature compared to a monthly climatology baseline covering the period 1993-2016. Data is updated daily courtesy of <a href="https://marine.copernicus.eu/" target="_blank" rel="noopener" class="underline">Copernicus Marine Service (CMEMS)</a>.
+          Read more on the <a href="https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description" target="_blank" rel="noopener" class="underline">CMEMS product page</a>.
         </p>
         
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -25,8 +25,7 @@
         <script>
         (function() {
             document.addEventListener("DOMContentLoaded", function() {
-                const map = L.map('noaaMap', {
-                    crs: L.CRS.EPSG4326,
+                const map = L.map('sstAnomalyMap', {
                     center: [-41.2710849, 173.2836756],
                     zoom: 3,
                     scrollWheelZoom: false,
@@ -36,7 +35,6 @@
 
                 L.control.scale({ imperial: false }).addTo(map);
 
-                // Scroll hint
                 const container = map.getContainer();
 
                 const hint = document.createElement('div');
@@ -96,38 +94,25 @@
                     touchHintTimeout = setTimeout(() => { touchHint.style.opacity = '0'; }, 1500);
                 }
 
-                container.addEventListener('touchstart', function(e) {
-                    if (e.touches.length === 2) {
-                        // Two fingers — enable map panning
-                        map.dragging.enable();
-                    } else {
-                        // One finger — disable map panning, let page scroll
-                        map.dragging.disable();
-                        showTouchHint();
-                    }
-                }, { passive: true });
-
-                container.addEventListener('touchend', function(e) {
-                    // When fingers lift, re-disable dragging so next single-touch scrolls page
-                    if (e.touches.length < 2) {
-                        map.dragging.disable();
-                    }
-                }, { passive: true });
-
                 let touchHintDelay;
 
                 container.addEventListener('touchstart', function(e) {
                     if (e.touches.length === 2) {
                         map.dragging.enable();
-                        clearTimeout(touchHintDelay);          // ← cancel the pending hint
-                        touchHint.style.opacity = '0';         // ← hide it if it snuck through
+                        clearTimeout(touchHintDelay);
+                        touchHint.style.opacity = '0';
                     } else {
                         map.dragging.disable();
-                        touchHintDelay = setTimeout(() => showTouchHint(), 80);  // ← small delay before showing
+                        touchHintDelay = setTimeout(() => showTouchHint(), 80);
                     }
                 }, { passive: true });
 
-                // Colorbar
+                container.addEventListener('touchend', function(e) {
+                    if (e.touches.length < 2) {
+                        map.dragging.disable();
+                    }
+                }, { passive: true });
+
                 const colorbar = document.createElement('div');
                 colorbar.className = 'map-glass-light';
                 Object.assign(colorbar.style, {
@@ -146,20 +131,26 @@
                 });
 
                 const img = document.createElement('img');
-                img.src = 'images/ssta-colorbar.png';
+                img.src = 'https://wmts.marine.copernicus.eu/teroWmts' +
+                    '?SERVICE=WMTS' +
+                    '&REQUEST=GetLegend' +
+                    '&LAYER=GLOBAL_ANALYSISFORECAST_PHY_001_024%2F' +
+                    'cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411%2F' +
+                    'sea_surface_temperature_anomaly' +
+                    '&STYLE=cmap:balance,range:-5/5';
                 img.alt = 'SST Anomaly colorbar';
                 Object.assign(img.style, {
-                    display:   'block',
-                    width:     'auto',
-                    height:    'auto',
-                    maxHeight: '480px',
-                    maxWidth:  '80px',
+                    display: 'block',
+                    width: '160px',
+                    height: '400px',
+                    maxHeight: '400px',
+                    maxWidth: '160px',
+                    borderRadius: '15px',
                 });
 
                 colorbar.appendChild(img);
                 container.appendChild(colorbar);
 
-                // Mobile toggle
                 const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
                 let colorbarVisible = true;
 
@@ -187,33 +178,26 @@
 
                 toggleBtn.addEventListener('click', function() {
                     colorbarVisible = !colorbarVisible;
-                    colorbar.style.opacity  = colorbarVisible ? '1' : '0';
-                    colorbar.style.pointerEvents = colorbarVisible ? 'none' : 'none';
-                    // Slide off to the right when hidden
+                    colorbar.style.opacity   = colorbarVisible ? '1' : '0';
                     colorbar.style.transform = colorbarVisible
                         ? 'translateY(-50%)'
                         : 'translateY(-50%) translateX(20px)';
-                    toggleBtn.innerHTML = colorbarVisible ? '<i class="fa-regular fa-chart-bar"></i>' : '<i class="fa-regular fa-chart-bar"></i>';
                     toggleBtn.title = colorbarVisible ? 'Hide colorbar' : 'Show colorbar';
                 });
 
                 container.appendChild(toggleBtn);
 
-                // Responsive toggle
                 function applyResponsiveState() {
                     if (isMobile()) {
                         toggleBtn.style.display  = 'flex';
-                        // Start hidden on mobile
                         if (colorbarVisible) {
                             colorbarVisible = false;
                             colorbar.style.opacity   = '0';
                             colorbar.style.transform = 'translateY(-50%) translateX(20px)';
-                            toggleBtn.innerHTML = '<i class="fa-regular fa-chart-bar"></i>';
                             toggleBtn.title = 'Show colorbar';
                         }
                     } else {
                         toggleBtn.style.display  = 'none';
-                        // Always visible on desktop
                         colorbarVisible = true;
                         colorbar.style.opacity   = '1';
                         colorbar.style.transform = 'translateY(-50%)';
@@ -223,22 +207,95 @@
                 applyResponsiveState();
                 window.addEventListener('resize', applyResponsiveState);
 
-                // NOAA WMS layer
-                const baseUrl = 'https://pae-paha.pacioos.hawaii.edu/erddap/wms/dhw_5km/request?';
-                L.tileLayer.wms(baseUrl, {
-                    layers: 'dhw_5km:CRW_SSTANOMALY',
-                    format: 'image/png',
+                const wmtsUrl =
+                    'https://wmts.marine.copernicus.eu/teroWmts' +
+                    '?SERVICE=WMTS' +
+                    '&REQUEST=GetTile' +
+                    '&LAYER=GLOBAL_ANALYSISFORECAST_PHY_001_024%2F' +
+                    'cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411%2F' +
+                    'sea_surface_temperature_anomaly' +
+                    '&STYLE=cmap:balance,range:-5/5' +
+                    '&FORMAT=image%2Fpng' +
+                    '&TILEMATRIXSET=EPSG:3857' +
+                    '&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}';
+
+                L.tileLayer(wmtsUrl, {
+                    attribution: 'Copernicus Marine Service (CMEMS)',
                     transparent: true,
-                    version: '1.3.0',
-                    attribution: 'NOAA Coral Reef Watch (CRW)'
+                    opacity: 1,
+                    maxZoom: 10,
                 }).addTo(map);
 
-                // Land boundaries
+                map.on('click', function(e) {
+                    const wrappedLatLng = e.latlng.wrap();
+
+                    const zoom = map.getZoom();
+    
+                    const point = map.project(wrappedLatLng, zoom);
+                    const tileSize = 256;
+
+                    const tileCol = Math.floor(point.x / tileSize);
+                    const tileRow = Math.floor(point.y / tileSize);
+
+                    const i = Math.floor(point.x % tileSize);
+                    const j = Math.floor(point.y % tileSize);
+
+                    const infoUrl = `https://wmts.marine.copernicus.eu/teroWmts/?service=WMTS&request=GetFeatureInfo&layer=GLOBAL_ANALYSISFORECAST_PHY_001_024/cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411/sea_surface_temperature_anomaly&tilematrixset=EPSG:3857&tilematrix=${zoom}&tilerow=${tileRow}&tilecol=${tileCol}&i=${i}&j=${j}&INFOFORMAT=text/html`;
+
+                    const popup = L.popup()
+                        .setLatLng(e.latlng)
+                        .setContent("<div style='text-align:center; padding:4px;'><em>Fetching temperature...</em></div>")
+                        .openOn(map);
+
+                    fetch(infoUrl)
+                            .then(response => response.text())
+                            .then(html => {
+                                if (html && html.includes('<table')) {
+                                    const parser = new DOMParser();
+                                    const doc = parser.parseFromString(html, "text/html");
+                                    const rows = doc.querySelectorAll('tr');
+                
+                                    let tempValue = null;
+
+                                    if (rows.length >= 2) {
+                                        const headers = rows[0].querySelectorAll('th, td');
+                                        let valueIndex = -1;
+                    
+                                        headers.forEach((header, index) => {
+                                            if (header.textContent.trim().toLowerCase() === 'value') {
+                                                valueIndex = index;
+                                            }
+                                        });
+
+                                        if (valueIndex !== -1) {
+                                            const dataCells = rows[1].querySelectorAll('th, td');
+                                            if (dataCells.length > valueIndex) {
+                                                tempValue = parseFloat(dataCells[valueIndex].textContent.trim()).toFixed(2);
+                                            }
+                                        }
+                                    }
+
+                                    if (tempValue !== null && !isNaN(tempValue)) {
+                                        popup.setContent(`<div style="text-align:center; padding:4px; font-size:14px;"><strong>Temperature Anomaly</strong><br>${tempValue} °C</div>`);
+                                    } else {
+                                        popup.setContent("<div style='text-align:center; padding:4px;'>No temperature data here.</div>");
+                                    }
+
+                                } else {
+                                    popup.setContent("<div style='text-align:center; padding:4px;'>No data available here.</div>");
+                                }
+                            })
+                            .catch(err => {
+                                popup.setContent("<div style='text-align:center; padding:4px; color:red;'>Error retrieving data.</div>");
+                                console.error("GetFeatureInfo Error: ", err);
+                            });
+                    });
+
                 const landStyle = {
-                    fillColor: "#2c3e50",
+                    fillColor:   '#2c3e50',
                     fillOpacity: 1,
-                    color: "#ffffff",
-                    weight: 1
+                    color:       '#ffffff',
+                    weight:      1
                 };
 
                 function addLandAtOffset(data, lngOffset) {
@@ -263,6 +320,4 @@
       </div>
     </div>
   </div>
-
-
 </section>
