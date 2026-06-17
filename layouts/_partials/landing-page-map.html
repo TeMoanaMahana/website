@@ -130,6 +130,15 @@
                     transition:      'opacity 0.25s, transform 0.25s',
                 });
 
+                const imgWrapper = document.createElement('div');
+                Object.assign(imgWrapper.style, {
+                    width:       '110px',   // ← adjust this to clip the right whitespace
+                    height:      '400px',
+                    overflow:    'hidden',
+                    borderRadius: '15px',
+                    flexShrink:  '0',       // prevent the flex colorbar container from squishing the wrapper
+                });
+
                 const img = document.createElement('img');
                 img.src = 'https://wmts.marine.copernicus.eu/teroWmts' +
                     '?SERVICE=WMTS' +
@@ -140,15 +149,14 @@
                     '&STYLE=cmap:balance,range:-5/5';
                 img.alt = 'SST Anomaly colorbar';
                 Object.assign(img.style, {
-                    display: 'block',
-                    width: '160px',
-                    height: '400px',
-                    maxHeight: '400px',
-                    maxWidth: '160px',
-                    borderRadius: '15px',
+                    display:  'block',
+                    width:    '160px',
+                    maxWidth: 'none',   // ← overrides Tailwind's max-width: 100% — this was causing the squish
+                    height:   '400px',
                 });
 
-                colorbar.appendChild(img);
+                imgWrapper.appendChild(img);
+                colorbar.appendChild(imgWrapper);
                 container.appendChild(colorbar);
 
                 const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
