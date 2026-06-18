@@ -13,3 +13,4 @@ social:
     text: "Google Scholar"
 ---
 
+Alain de Verneil is a physical oceanographer interested in how ocean circulation impacts the organisms and tracers important for ecosystem processes and climate regulation. As part of the Te Moana Mahana team, he will be analysing ocean heat content around the coasts of Aotearoa using glider data coming from the circumnavigating Māui survey.
