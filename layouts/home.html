@@ -80,6 +80,14 @@
                 {{ end }}
               {{ end }}
             {{ end }}
+            {{ with .button2 }}
+              {{ if .enable }}
+                  <a class="btn-glass" href="{{ .link | relLangURL }}">
+                    {{ .label }}
+                    <i class= "fa fa-envelope-circle-check pl-2"></i>
+                  </a>
+              {{ end }}
+            {{ end }}
           </div>
         </div>
       </div>

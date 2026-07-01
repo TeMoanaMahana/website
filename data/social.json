@@ -5,6 +5,12 @@
       "icon": "fa-solid fa-envelope",
       "link": "mailto:temoanamahana@auckland.ac.nz",
       "text": "Contact us"
+    },
+    {
+      "name": "Email List",
+      "icon": "fa-solid fa-envelope-circle-check",
+      "link": "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=lW6z0VAN6UKVj7Y_qQa-qug3j2u7aPNAmCKWcq4yo9xUMlZFSE1OTTJSVDFUNTY3Tk5WRTRDRlM5My4u",
+      "text": "Subscribe to our email list"
     }
   ]
 }

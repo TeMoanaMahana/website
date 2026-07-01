@@ -1,21 +1,22 @@
 ---
-# Banner (Mapped from your Hero Block)
 banner:
   title: "Welcome to Te Moana Mahana"
   content: "Ocean change forecasting for climate resilience in Aotearoa"
   image: "/images/gallery/mitaBay.png"
   button:
     enable: true
-    link: "blog"
     label: "Read our latest update"
+  button2:
+    enable: true
+    label: "Subscribe to our email list"
+    link: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=lW6z0VAN6UKVj7Y_qQa-qug3j2u7aPNAmCKWcq4yo9xUMlZFSE1OTTJSVDFUNTY3Tk5WRTRDRlM5My4u"
 
-# Features (Repurposed for Stats and About sections)
 features:
   - title: "About the Project"
-    image: "/images/team/team-home.png" # You can add a relevant image here
+    image: "/images/team/team-home.png"
     content:
       "Oceans affect everything in New Zealand – from  local weather to the productivity of our industries.
-      <br></br>  
+      <br></br>
       The oceans in the region are warming faster than the global average creating changes to weather and the coastal ocean that will challenge the resilience of our society and economy.
       <br></br>
       We are team of oceanographers, atmospheric, and social science experts who will assess:"
