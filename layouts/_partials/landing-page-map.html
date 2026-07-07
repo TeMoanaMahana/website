@@ -3,327 +3,390 @@
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <h2 class="mb-8 text-center">Near Real Time Sea Surface Temperature Anomaly</h2>
+        <h2 class="mb-8 text-center">
+          Near Real Time Sea Surface Temperature Anomaly
+        </h2>
 
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        />
 
         <div class="flex justify-center w-full">
-          <div 
-            id="sstAnomalyMap" 
-            class="rounded-xl shadow-lg border border-border z-0" 
-            style="height: 600px; width: 100%; min-width: 100%; position: relative;">
-          </div>
+          <div
+            id="sstAnomalyMap"
+            class="rounded-xl shadow-lg border border-border z-0"
+            style="
+              height: 600px;
+              width: 100%;
+              min-width: 100%;
+              position: relative;
+            "
+          ></div>
         </div>
 
         <p class="mt-4 text-center text-sm">
-          The anomaly is today's sea surface temperature compared to a monthly climatology baseline covering the period 1993-2016. Data is updated daily courtesy of <a href="https://marine.copernicus.eu/" target="_blank" rel="noopener" class="underline">Copernicus Marine Service (CMEMS)</a>.
-          Read more on the <a href="https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description" target="_blank" rel="noopener" class="underline">CMEMS product page</a>.
+          The anomaly is today's sea surface temperature compared to a monthly
+          climatology baseline covering the period 1993-2016. Data is updated
+          daily courtesy of
+          <a
+            href="https://marine.copernicus.eu/"
+            target="_blank"
+            rel="noopener"
+            class="underline"
+            >Copernicus Marine Service (CMEMS)</a
+          >. Read more on the
+          <a
+            href="https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description"
+            target="_blank"
+            rel="noopener"
+            class="underline"
+            >CMEMS product page</a
+          >.
         </p>
-        
+
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
         <script>
-        (function() {
-            document.addEventListener("DOMContentLoaded", function() {
-                const map = L.map('sstAnomalyMap', {
-                    center: [-41.2710849, 173.2836756],
-                    zoom: 3,
-                    scrollWheelZoom: false,
-                    dragging: !L.Browser.mobile,
-                    tap: false
-                });
+          (function () {
+            document.addEventListener("DOMContentLoaded", function () {
+              const map = L.map("sstAnomalyMap", {
+                center: [-41.2710849, 173.2836756],
+                zoom: 3,
+                scrollWheelZoom: false,
+                dragging: !L.Browser.mobile,
+                tap: false,
+              });
 
-                L.control.scale({ imperial: false }).addTo(map);
+              L.control.scale({ imperial: false }).addTo(map);
 
-                const container = map.getContainer();
+              const container = map.getContainer();
 
-                const hint = document.createElement('div');
-                hint.textContent = 'Hold Ctrl / ⌘ Cmd to zoom';
-                hint.className = 'map-glass-light';
-                Object.assign(hint.style, {
-                    position:      'absolute',
-                    top:           '50%',
-                    left:          '50%',
-                    transform:     'translate(-50%, -50%)',
-                    pointerEvents: 'none',
-                    opacity:       '0',
-                    transition:    'opacity 0.2s',
-                    zIndex:        '1000',
-                });
-                container.style.position = 'relative';
-                container.appendChild(hint);
+              const hint = document.createElement("div");
+              hint.textContent = "Hold Ctrl / ⌘ Cmd to zoom";
+              hint.className = "map-glass-light";
+              Object.assign(hint.style, {
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                pointerEvents: "none",
+                opacity: "0",
+                transition: "opacity 0.2s",
+                zIndex: "1000",
+              });
+              container.style.position = "relative";
+              container.appendChild(hint);
 
-                let hintTimeout;
-                function showHint() {
-                    hint.style.opacity = '1';
-                    clearTimeout(hintTimeout);
-                    hintTimeout = setTimeout(() => { hint.style.opacity = '0'; }, 1500);
+              let hintTimeout;
+              function showHint() {
+                hint.style.opacity = "1";
+                clearTimeout(hintTimeout);
+                hintTimeout = setTimeout(() => {
+                  hint.style.opacity = "0";
+                }, 1500);
+              }
+
+              container.addEventListener(
+                "wheel",
+                function (e) {
+                  if (e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const delta = e.deltaY < 0 ? 1 : -1;
+                    map.setZoom(map.getZoom() + delta);
+                  } else {
+                    showHint();
+                  }
+                },
+                { passive: false },
+              );
+
+              const touchHint = document.createElement("div");
+              touchHint.textContent = "Use two fingers to pan the map";
+              touchHint.className = "map-glass-light";
+              Object.assign(touchHint.style, {
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                pointerEvents: "none",
+                opacity: "0",
+                transition: "opacity 0.2s",
+                zIndex: "1000",
+                whiteSpace: "nowrap",
+              });
+              container.appendChild(touchHint);
+
+              let touchHintTimeout;
+              function showTouchHint() {
+                touchHint.style.opacity = "1";
+                clearTimeout(touchHintTimeout);
+                touchHintTimeout = setTimeout(() => {
+                  touchHint.style.opacity = "0";
+                }, 1500);
+              }
+
+              let touchHintDelay;
+
+              container.addEventListener(
+                "touchstart",
+                function (e) {
+                  if (e.touches.length === 2) {
+                    map.dragging.enable();
+                    clearTimeout(touchHintDelay);
+                    touchHint.style.opacity = "0";
+                  } else {
+                    map.dragging.disable();
+                    touchHintDelay = setTimeout(() => showTouchHint(), 80);
+                  }
+                },
+                { passive: true },
+              );
+
+              container.addEventListener(
+                "touchend",
+                function (e) {
+                  if (e.touches.length < 2) {
+                    map.dragging.disable();
+                  }
+                },
+                { passive: true },
+              );
+
+              const colorbar = document.createElement("div");
+              colorbar.className = "map-glass-light";
+              Object.assign(colorbar.style, {
+                position: "absolute",
+                top: "50%",
+                right: "12px",
+                transform: "translateY(-50%)",
+                zIndex: "1000",
+                padding: "10px 8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: "none",
+                borderRadius: "25px",
+                transition: "opacity 0.25s, transform 0.25s",
+              });
+
+              const imgWrapper = document.createElement("div");
+              Object.assign(imgWrapper.style, {
+                width: "110px", // ← adjust this to clip the right whitespace
+                height: "400px",
+                overflow: "hidden",
+                borderRadius: "15px",
+                flexShrink: "0", // prevent the flex colorbar container from squishing the wrapper
+              });
+
+              const img = document.createElement("img");
+              img.src =
+                "https://wmts.marine.copernicus.eu/teroWmts" +
+                "?SERVICE=WMTS" +
+                "&REQUEST=GetLegend" +
+                "&LAYER=GLOBAL_ANALYSISFORECAST_PHY_001_024%2F" +
+                "cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411%2F" +
+                "sea_surface_temperature_anomaly" +
+                "&STYLE=cmap:balance,range:-5/5";
+              img.alt = "SST Anomaly colorbar";
+              Object.assign(img.style, {
+                display: "block",
+                width: "160px",
+                maxWidth: "none", // ← overrides Tailwind's max-width: 100% — this was causing the squish
+                height: "400px",
+              });
+
+              imgWrapper.appendChild(img);
+              colorbar.appendChild(imgWrapper);
+              container.appendChild(colorbar);
+
+              const isMobile = () =>
+                window.matchMedia("(max-width: 768px)").matches;
+              let colorbarVisible = true;
+
+              const toggleBtn = document.createElement("button");
+              toggleBtn.className = "map-glass-light";
+              toggleBtn.innerHTML = '<i class="fa-regular fa-chart-bar"></i>';
+              toggleBtn.title = "Toggle colorbar";
+              Object.assign(toggleBtn.style, {
+                position: "absolute",
+                top: "12px",
+                right: "12px",
+                zIndex: "1001",
+                width: "34px",
+                height: "34px",
+                display: "none",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "16px",
+                cursor: "pointer",
+                border: "none",
+                borderRadius: "25px",
+                padding: "0",
+                lineHeight: "1",
+              });
+
+              toggleBtn.addEventListener("click", function () {
+                colorbarVisible = !colorbarVisible;
+                colorbar.style.opacity = colorbarVisible ? "1" : "0";
+                colorbar.style.transform = colorbarVisible
+                  ? "translateY(-50%)"
+                  : "translateY(-50%) translateX(20px)";
+                toggleBtn.title = colorbarVisible
+                  ? "Hide colorbar"
+                  : "Show colorbar";
+              });
+
+              container.appendChild(toggleBtn);
+
+              function applyResponsiveState() {
+                if (isMobile()) {
+                  toggleBtn.style.display = "flex";
+                  if (colorbarVisible) {
+                    colorbarVisible = false;
+                    colorbar.style.opacity = "0";
+                    colorbar.style.transform =
+                      "translateY(-50%) translateX(20px)";
+                    toggleBtn.title = "Show colorbar";
+                  }
+                } else {
+                  toggleBtn.style.display = "none";
+                  colorbarVisible = true;
+                  colorbar.style.opacity = "1";
+                  colorbar.style.transform = "translateY(-50%)";
                 }
+              }
 
-                container.addEventListener('wheel', function(e) {
-                    if (e.ctrlKey || e.metaKey) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const delta = e.deltaY < 0 ? 1 : -1;
-                        map.setZoom(map.getZoom() + delta);
-                    } else {
-                        showHint();
-                    }
-                }, { passive: false });
+              applyResponsiveState();
+              window.addEventListener("resize", applyResponsiveState);
 
-                const touchHint = document.createElement('div');
-                touchHint.textContent = 'Use two fingers to pan the map';
-                touchHint.className = 'map-glass-light';
-                Object.assign(touchHint.style, {
-                    position:      'absolute',
-                    top:           '50%',
-                    left:          '50%',
-                    transform:     'translate(-50%, -50%)',
-                    pointerEvents: 'none',
-                    opacity:       '0',
-                    transition:    'opacity 0.2s',
-                    zIndex:        '1000',
-                    whiteSpace:    'nowrap',
-                });
-                container.appendChild(touchHint);
+              const wmtsUrl =
+                "https://wmts.marine.copernicus.eu/teroWmts" +
+                "?SERVICE=WMTS" +
+                "&REQUEST=GetTile" +
+                "&LAYER=GLOBAL_ANALYSISFORECAST_PHY_001_024%2F" +
+                "cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411%2F" +
+                "sea_surface_temperature_anomaly" +
+                "&STYLE=cmap:balance,range:-5/5" +
+                "&FORMAT=image%2Fpng" +
+                "&TILEMATRIXSET=EPSG:3857" +
+                "&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}";
 
-                let touchHintTimeout;
-                function showTouchHint() {
-                    touchHint.style.opacity = '1';
-                    clearTimeout(touchHintTimeout);
-                    touchHintTimeout = setTimeout(() => { touchHint.style.opacity = '0'; }, 1500);
-                }
+              L.tileLayer(wmtsUrl, {
+                attribution: "Copernicus Marine Service (CMEMS)",
+                transparent: true,
+                opacity: 1,
+                maxZoom: 10,
+              }).addTo(map);
 
-                let touchHintDelay;
+              map.on("click", function (e) {
+                const wrappedLatLng = e.latlng.wrap();
 
-                container.addEventListener('touchstart', function(e) {
-                    if (e.touches.length === 2) {
-                        map.dragging.enable();
-                        clearTimeout(touchHintDelay);
-                        touchHint.style.opacity = '0';
-                    } else {
-                        map.dragging.disable();
-                        touchHintDelay = setTimeout(() => showTouchHint(), 80);
-                    }
-                }, { passive: true });
+                const zoom = map.getZoom();
 
-                container.addEventListener('touchend', function(e) {
-                    if (e.touches.length < 2) {
-                        map.dragging.disable();
-                    }
-                }, { passive: true });
+                const point = map.project(wrappedLatLng, zoom);
+                const tileSize = 256;
 
-                const colorbar = document.createElement('div');
-                colorbar.className = 'map-glass-light';
-                Object.assign(colorbar.style, {
-                    position:        'absolute',
-                    top:             '50%',
-                    right:           '12px',
-                    transform:       'translateY(-50%)',
-                    zIndex:          '1000',
-                    padding:         '10px 8px',
-                    display:         'flex',
-                    alignItems:      'center',
-                    justifyContent:  'center',
-                    pointerEvents:   'none',
-                    borderRadius:    '25px',
-                    transition:      'opacity 0.25s, transform 0.25s',
-                });
+                const tileCol = Math.floor(point.x / tileSize);
+                const tileRow = Math.floor(point.y / tileSize);
 
-                const imgWrapper = document.createElement('div');
-                Object.assign(imgWrapper.style, {
-                    width:       '110px',   // ← adjust this to clip the right whitespace
-                    height:      '400px',
-                    overflow:    'hidden',
-                    borderRadius: '15px',
-                    flexShrink:  '0',       // prevent the flex colorbar container from squishing the wrapper
-                });
+                const i = Math.floor(point.x % tileSize);
+                const j = Math.floor(point.y % tileSize);
 
-                const img = document.createElement('img');
-                img.src = 'https://wmts.marine.copernicus.eu/teroWmts' +
-                    '?SERVICE=WMTS' +
-                    '&REQUEST=GetLegend' +
-                    '&LAYER=GLOBAL_ANALYSISFORECAST_PHY_001_024%2F' +
-                    'cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411%2F' +
-                    'sea_surface_temperature_anomaly' +
-                    '&STYLE=cmap:balance,range:-5/5';
-                img.alt = 'SST Anomaly colorbar';
-                Object.assign(img.style, {
-                    display:  'block',
-                    width:    '160px',
-                    maxWidth: 'none',   // ← overrides Tailwind's max-width: 100% — this was causing the squish
-                    height:   '400px',
-                });
+                const infoUrl = `https://wmts.marine.copernicus.eu/teroWmts/?service=WMTS&request=GetFeatureInfo&layer=GLOBAL_ANALYSISFORECAST_PHY_001_024/cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411/sea_surface_temperature_anomaly&tilematrixset=EPSG:3857&tilematrix=${zoom}&tilerow=${tileRow}&tilecol=${tileCol}&i=${i}&j=${j}&INFOFORMAT=text/html`;
 
-                imgWrapper.appendChild(img);
-                colorbar.appendChild(imgWrapper);
-                container.appendChild(colorbar);
+                const popup = L.popup()
+                  .setLatLng(e.latlng)
+                  .setContent(
+                    "<div style='text-align:center; padding:4px;'><em>Fetching temperature...</em></div>",
+                  )
+                  .openOn(map);
 
-                const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
-                let colorbarVisible = true;
+                fetch(infoUrl)
+                  .then((response) => response.text())
+                  .then((html) => {
+                    if (html && html.includes("<table")) {
+                      const parser = new DOMParser();
+                      const doc = parser.parseFromString(html, "text/html");
+                      const rows = doc.querySelectorAll("tr");
 
-                const toggleBtn = document.createElement('button');
-                toggleBtn.className = 'map-glass-light';
-                toggleBtn.innerHTML = '<i class="fa-regular fa-chart-bar"></i>';
-                toggleBtn.title = 'Toggle colorbar';
-                Object.assign(toggleBtn.style, {
-                    position:        'absolute',
-                    top:             '12px',
-                    right:           '12px',
-                    zIndex:          '1001',
-                    width:           '34px',
-                    height:          '34px',
-                    display:         'none',
-                    alignItems:      'center',
-                    justifyContent:  'center',
-                    fontSize:        '16px',
-                    cursor:          'pointer',
-                    border:          'none',
-                    borderRadius:    '25px',
-                    padding:         '0',
-                    lineHeight:      '1',
-                });
+                      let tempValue = null;
 
-                toggleBtn.addEventListener('click', function() {
-                    colorbarVisible = !colorbarVisible;
-                    colorbar.style.opacity   = colorbarVisible ? '1' : '0';
-                    colorbar.style.transform = colorbarVisible
-                        ? 'translateY(-50%)'
-                        : 'translateY(-50%) translateX(20px)';
-                    toggleBtn.title = colorbarVisible ? 'Hide colorbar' : 'Show colorbar';
-                });
+                      if (rows.length >= 2) {
+                        const headers = rows[0].querySelectorAll("th, td");
+                        let valueIndex = -1;
 
-                container.appendChild(toggleBtn);
+                        headers.forEach((header, index) => {
+                          if (
+                            header.textContent.trim().toLowerCase() === "value"
+                          ) {
+                            valueIndex = index;
+                          }
+                        });
 
-                function applyResponsiveState() {
-                    if (isMobile()) {
-                        toggleBtn.style.display  = 'flex';
-                        if (colorbarVisible) {
-                            colorbarVisible = false;
-                            colorbar.style.opacity   = '0';
-                            colorbar.style.transform = 'translateY(-50%) translateX(20px)';
-                            toggleBtn.title = 'Show colorbar';
+                        if (valueIndex !== -1) {
+                          const dataCells = rows[1].querySelectorAll("th, td");
+                          if (dataCells.length > valueIndex) {
+                            tempValue = parseFloat(
+                              dataCells[valueIndex].textContent.trim(),
+                            ).toFixed(2);
+                          }
                         }
+                      }
+
+                      if (tempValue !== null && !isNaN(tempValue)) {
+                        popup.setContent(
+                          `<div style="text-align:center; padding:4px; font-size:14px;"><strong>Temperature Anomaly</strong><br>${tempValue} °C</div>`,
+                        );
+                      } else {
+                        popup.setContent(
+                          "<div style='text-align:center; padding:4px;'>No temperature data here.</div>",
+                        );
+                      }
                     } else {
-                        toggleBtn.style.display  = 'none';
-                        colorbarVisible = true;
-                        colorbar.style.opacity   = '1';
-                        colorbar.style.transform = 'translateY(-50%)';
+                      popup.setContent(
+                        "<div style='text-align:center; padding:4px;'>No data available here.</div>",
+                      );
                     }
-                }
+                  })
+                  .catch((err) => {
+                    popup.setContent(
+                      "<div style='text-align:center; padding:4px; color:red;'>Error retrieving data.</div>",
+                    );
+                    console.error("GetFeatureInfo Error: ", err);
+                  });
+              });
 
-                applyResponsiveState();
-                window.addEventListener('resize', applyResponsiveState);
+              const landStyle = {
+                fillColor: "#2c3e50",
+                fillOpacity: 1,
+                color: "#ffffff",
+                weight: 1,
+              };
 
-                const wmtsUrl =
-                    'https://wmts.marine.copernicus.eu/teroWmts' +
-                    '?SERVICE=WMTS' +
-                    '&REQUEST=GetTile' +
-                    '&LAYER=GLOBAL_ANALYSISFORECAST_PHY_001_024%2F' +
-                    'cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411%2F' +
-                    'sea_surface_temperature_anomaly' +
-                    '&STYLE=cmap:balance,range:-5/5' +
-                    '&FORMAT=image%2Fpng' +
-                    '&TILEMATRIXSET=EPSG:3857' +
-                    '&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}';
-
-                L.tileLayer(wmtsUrl, {
-                    attribution: 'Copernicus Marine Service (CMEMS)',
-                    transparent: true,
-                    opacity: 1,
-                    maxZoom: 10,
+              function addLandAtOffset(data, lngOffset) {
+                L.geoJSON(data, {
+                  coordsToLatLng: function (coords) {
+                    return new L.LatLng(coords[1], coords[0] + lngOffset);
+                  },
+                  style: landStyle,
                 }).addTo(map);
+              }
 
-                map.on('click', function(e) {
-                    const wrappedLatLng = e.latlng.wrap();
-
-                    const zoom = map.getZoom();
-    
-                    const point = map.project(wrappedLatLng, zoom);
-                    const tileSize = 256;
-
-                    const tileCol = Math.floor(point.x / tileSize);
-                    const tileRow = Math.floor(point.y / tileSize);
-
-                    const i = Math.floor(point.x % tileSize);
-                    const j = Math.floor(point.y % tileSize);
-
-                    const infoUrl = `https://wmts.marine.copernicus.eu/teroWmts/?service=WMTS&request=GetFeatureInfo&layer=GLOBAL_ANALYSISFORECAST_PHY_001_024/cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411/sea_surface_temperature_anomaly&tilematrixset=EPSG:3857&tilematrix=${zoom}&tilerow=${tileRow}&tilecol=${tileCol}&i=${i}&j=${j}&INFOFORMAT=text/html`;
-
-                    const popup = L.popup()
-                        .setLatLng(e.latlng)
-                        .setContent("<div style='text-align:center; padding:4px;'><em>Fetching temperature...</em></div>")
-                        .openOn(map);
-
-                    fetch(infoUrl)
-                            .then(response => response.text())
-                            .then(html => {
-                                if (html && html.includes('<table')) {
-                                    const parser = new DOMParser();
-                                    const doc = parser.parseFromString(html, "text/html");
-                                    const rows = doc.querySelectorAll('tr');
-                
-                                    let tempValue = null;
-
-                                    if (rows.length >= 2) {
-                                        const headers = rows[0].querySelectorAll('th, td');
-                                        let valueIndex = -1;
-                    
-                                        headers.forEach((header, index) => {
-                                            if (header.textContent.trim().toLowerCase() === 'value') {
-                                                valueIndex = index;
-                                            }
-                                        });
-
-                                        if (valueIndex !== -1) {
-                                            const dataCells = rows[1].querySelectorAll('th, td');
-                                            if (dataCells.length > valueIndex) {
-                                                tempValue = parseFloat(dataCells[valueIndex].textContent.trim()).toFixed(2);
-                                            }
-                                        }
-                                    }
-
-                                    if (tempValue !== null && !isNaN(tempValue)) {
-                                        popup.setContent(`<div style="text-align:center; padding:4px; font-size:14px;"><strong>Temperature Anomaly</strong><br>${tempValue} °C</div>`);
-                                    } else {
-                                        popup.setContent("<div style='text-align:center; padding:4px;'>No temperature data here.</div>");
-                                    }
-
-                                } else {
-                                    popup.setContent("<div style='text-align:center; padding:4px;'>No data available here.</div>");
-                                }
-                            })
-                            .catch(err => {
-                                popup.setContent("<div style='text-align:center; padding:4px; color:red;'>Error retrieving data.</div>");
-                                console.error("GetFeatureInfo Error: ", err);
-                            });
-                    });
-
-                const landStyle = {
-                    fillColor:   '#2c3e50',
-                    fillOpacity: 1,
-                    color:       '#ffffff',
-                    weight:      1
-                };
-
-                function addLandAtOffset(data, lngOffset) {
-                    L.geoJSON(data, {
-                        coordsToLatLng: function(coords) {
-                            return new L.LatLng(coords[1], coords[0] + lngOffset);
-                        },
-                        style: landStyle
-                    }).addTo(map);
-                }
-
-                fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
-                    .then(res => res.json())
-                    .then(data => {
-                        addLandAtOffset(data, -360);
-                        addLandAtOffset(data,    0);
-                        addLandAtOffset(data,  360);
-                    });
+              fetch(
+                "https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/10m/physical/ne_10m_land.json",
+              )
+                .then((res) => res.json())
+                .then((data) => {
+                  addLandAtOffset(data, -720);
+                  addLandAtOffset(data, -360);
+                  addLandAtOffset(data, 0);
+                  addLandAtOffset(data, 360);
+                  addLandAtOffset(data, 720);
+                });
             });
-        })();
+          })();
         </script>
       </div>
     </div>
