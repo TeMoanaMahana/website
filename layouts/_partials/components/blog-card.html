@@ -1,19 +1,32 @@
 {{/* Blog card component */}}
 <div class="blog-card-glass relative h-full overflow-hidden flex flex-col group">
-  {{ $image:= .Params.image }}
-  {{ if $image }}
+  {{ $image := .Params.image }}
+  {{ $video := .Params.video }}
+  {{ if or $image $video }}
   <div class="blog-card-img-wrapper">
-    {{ partial "image" (dict "Src" $image "Context" .Page "Alt" .Title "Class" "w-full h-full object-cover" "size" "400x250") }}
+    {{ if $video }}
+      {{ $vid := resources.Get $video }}
+      {{ $ext := path.Ext $video | lower }}
+      {{ if $vid }}
+      <video class="w-full h-full object-cover" autoplay loop muted playsinline {{ with $image }}poster="{{ (resources.Get .).RelPermalink }}"{{ end }}>
+        <source src="{{ $vid.RelPermalink }}" type="video/{{ strings.TrimPrefix "." $ext }}">
+      </video>
+      {{ else }}
+      <video class="w-full h-full object-cover" autoplay loop muted playsinline {{ with $image }}poster="{{ . | relURL }}"{{ end }}>
+        <source src="{{ $video | relURL }}" type="video/{{ strings.TrimPrefix "." $ext }}">
+      </video>
+      {{ end }}
+    {{ else }}
+      {{ partial "image" (dict "Src" $image "Context" .Page "Alt" .Title "Class" "w-full h-full object-cover" "size" "400x250") }}
+    {{ end }}
   </div>
   {{ end }}
-
   <div class="p-6 flex flex-col flex-grow">
     <h4 class="mb-1">
       <a href="{{ .RelPermalink }}" class="blog-card-title stretched-link">
         {{ .Title }}
       </a>
     </h4>
-
     {{/* Date */}}
     <div class="mb-4 text-sm opacity-60">
       <i class="fa-regular fa-clock mr-1"></i>
@@ -21,11 +34,9 @@
         {{ .Date | time.Format ":date_long" }}
       </time>
     </div>
-
     <p class="mb-6 flex-grow">
       {{ .Summary | plainify | truncate 150 }}
     </p>
-
     <div class="mt-auto">
       <a href="{{ .RelPermalink }}" class="btn-glass-sm relative z-10">
         {{ T "read_more" | default "Read More" }}

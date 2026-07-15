@@ -4,7 +4,7 @@
 <div class="flex justify-center w-full">
   <div 
     id="gliderMap" 
-    data-csv-url="{{ "data/glider/processed/glider_data_processed.csv" | relURL }}"
+    data-csv-url="{{ "data/glider_data_processed.csv" | relURL }}"
     class="rounded-xl shadow-lg border border-border z-0" 
     style="height: 600px; width: 100%; min-width: 100%;">
   </div>
@@ -37,24 +37,10 @@
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    // Style for each leg's track: same colour family, slight hue drift per leg.
-    // Every leg is 75% opaque except the most recent, which is fully opaque.
-    // i = 0-based chronological index of the leg, total = number of legs.
-    function getLegStyle(i, total) {
-      const hue        = 215 + i * 10;              // slight colour drift per leg
-      const lightness  = 32 + i * 4;
-      const isLatest   = i === total - 1;
-      const opacity    = isLatest ? 1 : 0.75;
-      return {
-        color: `hsl(${hue}, 65%, ${Math.min(lightness, 60)}%)`,
-        opacity,
-      };
-    }
-
     const map = L.map('gliderMap', {
         scrollWheelZoom: false,
-        dragging: !L.Browser.mobile,
-        tap: false
+        dragging: !L.Browser.mobile,   // ← ADD
+        tap: false                      // ← ADD
     }).setView([-43.07, 173.48], 8);
 
     map.createPane('tickPane').style.zIndex = 450;
@@ -167,11 +153,27 @@
       iconAnchor: [16, 16]
     });
 
-    // One polyline + one (invisible, wide) hitbox polyline per leg, held in layer groups
-    // so we can fully rebuild them each refresh without leaking old layers.
-    let legTrackLayer  = L.layerGroup().addTo(map);
-    let legHitboxLayer = L.layerGroup().addTo(map);
-    let arrowLayer     = L.layerGroup().addTo(map);
+    let trackPathLive = L.polyline([], {
+      color: '#002F73', 
+      weight: 4,
+      opacity: 0.75,
+      dashArray: '8, 8', 
+      lineJoin: 'round'
+    }).addTo(map);
+
+    let trackPathLeg1 = L.polyline([], {
+      color: '#002F73', 
+      weight: 4,
+      opacity: 0.75,
+      dashArray: '8, 8', 
+      lineJoin: 'round'
+    }).addTo(map);
+
+    let trackPathHitbox = L.polyline([], {
+      weight: 20,
+      opacity: 0,
+      interactive: true
+    }).addTo(map);
 
     // Plot config
     const PLOT_BASE = '{{ "images/glider/" | relURL }}';
@@ -189,11 +191,7 @@
       return Math.min(520, Math.max(260, Math.round(mapWidth * 0.55)));
     }
 
-    // Tracks which leg's plots are currently shown in the popup, so the
-    // plot-type buttons know which leg folder to pull images from.
-    let activePopupLeg = null;
-
-    function buildPlotPopup(activeKey, legNumber) {
+    function buildPlotPopup(activeKey) {
       const popupWidth = getPopupWidth();
       const buttons = PLOTS.map(p => `
         <button
@@ -204,18 +202,16 @@
         </button>`
       ).join('');
 
-      const imgSrc = `${PLOT_BASE}leg${legNumber}/${activeKey}.png`;
-
       return `
         <div style="width: ${popupWidth}px; font-family: sans-serif;">
-          <h4 style="margin: 0 0 8px 0; color: #333;">Leg ${legNumber} Track Plots</h4>
+          <h4 style="margin: 0 0 8px 0; color: #333;">Track Plots</h4>
           <div style="margin-bottom: 8px; line-height: 1.8;">
             ${buttons}
           </div>
-          <a id="glider-plot-link" href="${imgSrc}" target="_blank" rel="noopener noreferrer">
+          <a id="glider-plot-link" href="${PLOT_BASE}${activeKey}.png" target="_blank" rel="noopener noreferrer">
             <img
               id="glider-plot-img"
-              src="${imgSrc}"
+              src="${PLOT_BASE}${activeKey}.png"
               alt="${activeKey}"
               style="width: 100%; border-radius: 6px; display: block; cursor: pointer;" />
           </a>
@@ -235,32 +231,40 @@
       trackPopup.options.minWidth = w;
     });
 
+    trackPathHitbox.on('click', function(e) {
+      trackPopup
+        .setLatLng(e.latlng)
+        .setContent(buildPlotPopup('Temperature'))
+        .openOn(map);
+    });
+
     map.on('popupopen', function(e) {
       if (e.popup !== trackPopup) return;
 
-      const popupContainer = e.popup.getElement();
-      popupContainer.addEventListener('click', function(evt) {
+      const container = e.popup.getElement();
+      container.addEventListener('click', function(evt) {
         const btn = evt.target.closest('[data-plot-key]');
-        if (!btn || activePopupLeg === null) return;
+        if (!btn) return;
 
         const key = btn.dataset.plotKey;
-        const imgSrc = `${PLOT_BASE}leg${activePopupLeg}/${key}.png`;
 
-        popupContainer.querySelector('#glider-plot-img').src = imgSrc;
-        popupContainer.querySelector('#glider-plot-link').href = imgSrc;
+        container.querySelector('#glider-plot-img').src = `${PLOT_BASE}${key}.png`;
+        container.querySelector('#glider-plot-link').href = `${PLOT_BASE}${key}.png`;
 
-        popupContainer.querySelectorAll('[data-plot-key]').forEach(b => {
+        container.querySelectorAll('[data-plot-key]').forEach(b => {
           b.classList.toggle('active-btn-glass', b.dataset.plotKey === key);
         });
       });
     });
+
+    let arrowLayer = L.layerGroup().addTo(map);
 
     let gliderMarker = L.marker([0, 0], {icon: gliderIcon, bubblingMouseEvents: true})
       .addTo(map)
       .bindPopup('');
 
     let initialFitDone = false;
-
+    
     async function updateGlider() {
       try {
         const csvUrl = document.getElementById('gliderMap').dataset.csvUrl;
@@ -269,109 +273,23 @@
 
         const rows = text.trim().split(/\r?\n/);
 
-        // Columns: Leg_Index, Timestamp (NZ), Timestamp (UTC), Longitude, Latitude, Pressure, ...
         const coordRows = rows
           .slice(1)
           .map(row => {
             const cols = row.split(',');
-            const legIndex = parseInt(cols[0]);
-            const unixSecs = parseFloat(cols[2]);
-            const lng = parseFloat(cols[3]);
-            const lat = parseFloat(cols[4]);
-            return { legIndex, unixSecs, lat, lng };
+            const dayIndex = parseInt(cols[0]);
+            const unixSecs = parseFloat(cols[1]);
+            const lng = parseFloat(cols[2]);
+            const lat = parseFloat(cols[3]);
+            return { dayIndex, unixSecs, lat, lng };
           })
-          .filter(r => !isNaN(r.lat) && !isNaN(r.lng) && !isNaN(r.legIndex));
+          .filter(r => !isNaN(r.lat) && !isNaN(r.lng));
 
         if (coordRows.length === 0) {
           console.error("No valid coordinates found in CSV");
           return;
         }
 
-        // Group points by leg, preserving row order within each leg.
-        const legOrder = [];
-        const legPoints = new Map();
-        for (const r of coordRows) {
-          if (!legPoints.has(r.legIndex)) {
-            legPoints.set(r.legIndex, []);
-            legOrder.push(r.legIndex);
-          }
-          legPoints.get(r.legIndex).push([r.lat, r.lng]);
-        }
-
-        // "Most recent" leg = the leg the last row in the CSV belongs to
-        // (handles legs not being in strict numeric/chronological order).
-        const mostRecentLeg = coordRows[coordRows.length - 1].legIndex;
-
-        // Chronological order of legs, based on first appearance in the CSV.
-        const chronologicalLegs = legOrder.slice();
-        const totalLegs = chronologicalLegs.length;
-
-        // Rebuild track + hitbox + arrow layers for each leg.
-        legTrackLayer.clearLayers();
-        legHitboxLayer.clearLayers();
-        arrowLayer.clearLayers();
-
-        chronologicalLegs.forEach((legNumber, i) => {
-          const points = legPoints.get(legNumber);
-          const style = getLegStyle(i, totalLegs);
-
-          const track = L.polyline(points, {
-            color: style.color,
-            weight: 4,
-            opacity: style.opacity,
-            dashArray: '8, 8',
-            lineJoin: 'round',
-          });
-          legTrackLayer.addLayer(track);
-
-          const hitbox = L.polyline(points, {
-            weight: 20,
-            opacity: 0,
-            interactive: true,
-          });
-          hitbox.on('click', function(e) {
-            activePopupLeg = legNumber;
-            trackPopup
-              .setLatLng(e.latlng)
-              .setContent(buildPlotPopup('Temperature', legNumber))
-              .openOn(map);
-          });
-          legHitboxLayer.addLayer(hitbox);
-
-          // Directional arrows for this leg, coloured/faded to match its track.
-          const ARROW_SPACING_M = 10000;
-          let distAccum = ARROW_SPACING_M / 2;
-          for (let p = 1; p < points.length - 1; p++) {
-            const prev = points[p - 1];
-            const curr = points[p];
-            distAccum += haversineMetres(prev[0], prev[1], curr[0], curr[1]);
-
-            if (distAccum >= ARROW_SPACING_M) {
-              distAccum = 0;
-              const bearing = getBearing(prev[0], prev[1], curr[0], curr[1]);
-
-              const arrowIcon = L.divIcon({
-                className: '',
-                html: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"
-                         style="transform: rotate(${bearing}deg); display:block;">
-                         <polygon points="8,1 15,15 8,11 1,15"
-                           fill="${style.color}" opacity="1" stroke="#B8D5FF" stroke-width="5" stroke-linejoin="round" paint-order="stroke fill"/>
-                       </svg>`,
-                iconSize:   [16, 16],
-                iconAnchor: [8, 8],
-              });
-
-              L.marker(curr, {
-                pane: 'arrowPane',
-                icon: arrowIcon,
-                interactive: false,
-                opacity: style.opacity,
-              }).addTo(arrowLayer);
-            }
-          }
-        });
-
-        // Full combined history (for arrows + initial map fit + last-update time)
         const history = coordRows.map(r => [r.lat, r.lng]);
 
         const lastRow  = coordRows[coordRows.length - 1];
@@ -390,14 +308,45 @@
           <div style="font-family: sans-serif; padding: 5px;">
             <h4 style="margin: 0 0 5px 0; color: #333;">Maui Ocean Glider</h4>
             <p style="margin: 2px 0;"><strong>Status:</strong> Active</p>
-            <p style="margin: 2px 0;"><strong>Leg:</strong> ${mostRecentLeg}</p>
             <p style="margin: 2px 0;"><strong>Last Update:</strong> ${lastDate}</p>
           </div>
         `;
 
         gliderMarker.setPopupContent(gliderPopupContent);
 
-        // Glider marker sits only at the tip of the most recent leg (the live position).
+        trackPathLive.setLatLngs(history);
+        trackPathHitbox.setLatLngs(history);
+
+        // Directional arrows
+        const ARROW_SPACING_M = 10000;
+
+        arrowLayer.clearLayers();
+        let distAccum = ARROW_SPACING_M / 2;
+        for (let i = 1; i < history.length - 1; i++) {
+          const prev = history[i - 1];
+          const curr = history[i];
+          distAccum += haversineMetres(prev[0], prev[1], curr[0], curr[1]);
+
+          if (distAccum >= ARROW_SPACING_M) {
+            distAccum = 0;
+            const bearing = getBearing(prev[0], prev[1], curr[0], curr[1]);
+
+            const arrowIcon = L.divIcon({
+              className: '',
+              html: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"
+                       style="transform: rotate(${bearing}deg); display:block;">
+                       <polygon points="8,1 15,15 8,11 1,15"
+                         fill="#002F73" opacity="1" stroke="#B8D5FF" stroke-width="5" stroke-linejoin="round" paint-order="stroke fill"/>
+                     </svg>`,
+              iconSize:   [16, 16],
+              iconAnchor: [8, 8],
+            });
+
+            L.marker(curr, { pane: 'arrowPane', icon: arrowIcon, interactive: false }).addTo(arrowLayer);
+          }
+        }
+
+        // Rotate glider marker
         const newPos = history[history.length - 1];
 
         if (history.length >= 2) {
@@ -424,12 +373,9 @@
 
         gliderMarker.setLatLng(newPos);
 
-        if (!initialFitDone) {
-          const allPoints = L.polyline(history);
-          if (allPoints.getBounds().isValid()) {
-            map.fitBounds(allPoints.getBounds(), { padding: [40, 40] });
-            initialFitDone = true;
-          }
+        if (!initialFitDone && trackPathLive.getBounds().isValid()) {
+          map.fitBounds(trackPathLive.getBounds(), { padding: [40, 40] });
+          initialFitDone = true;
         }
 
         lucide.createIcons();

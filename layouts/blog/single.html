@@ -1,16 +1,34 @@
 {{ define "main" }}
 {{ $image := .Params.image }}
+{{ $video := .Params.video }}
 {{ $theme := .Params.header_theme | default "dark" }}
 
 <section class="relative py-32 lg:py-48">
   <div class="absolute inset-0 z-0">
-    {{ if $image }}
-    {{ $bg := resources.Get $image }}
-    {{ if $bg }}
-    <img src="{{ $bg.RelPermalink }}" class="h-full w-full object-cover" alt="{{ .Title }}">
-    {{ else }}
-    <div class="h-full w-full bg-navy"></div>
-    {{ end }}
+    {{ if $video }}
+      {{ $vid := resources.Get $video }}
+      {{ $ext := path.Ext $video | lower }}
+      {{ if $vid }}
+      <video class="h-full w-full object-cover" autoplay loop muted playsinline {{ with $image }}poster="{{ (resources.Get .).RelPermalink }}"{{ end }}>
+        <source src="{{ $vid.RelPermalink }}" type="video/{{ strings.TrimPrefix "." $ext }}">
+      </video>
+      {{ else }}
+      <video class="h-full w-full object-cover" autoplay loop muted playsinline {{ with $image }}poster="{{ . | relURL }}"{{ end }}>
+        <source src="{{ $video | relURL }}" type="video/{{ strings.TrimPrefix "." $ext }}">
+      </video>
+      {{ end }}
+    {{ else if $image }}
+      {{ $bg := resources.Get $image }}
+      {{ if $bg }}
+      <img src="{{ $bg.RelPermalink }}" class="h-full w-full object-cover" alt="{{ .Title }}">
+      {{ else }}
+      {{ $bg := resources.GetRemote $image }}
+      {{ if $bg }}
+      <img src="{{ $bg.RelPermalink }}" class="h-full w-full object-cover" alt="{{ .Title }}">
+      {{ else }}
+      <img src="{{ $image | relURL }}" class="h-full w-full object-cover" alt="{{ .Title }}">
+      {{ end }}
+      {{ end }}
     {{ else }}
     <div class="h-full w-full bg-navy"></div>
     {{ end }}
