@@ -6,7 +6,7 @@ surface period within each leg, tags each row with a Leg_Index (taken from
 the filename), and merges everything into one output CSV.
 
 Usage:
-    python glider_data_processing.py static/glider/raw/ static/data/glider_data_processed.csv
+    python glider_data_processing.py static/data/glider/raw/ static/data/glider/processed/glider_data_processed.csv
 """
 
 import pandas as pd

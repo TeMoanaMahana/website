@@ -1,23 +1,20 @@
 name: Process Glider Data
-
 # ── Trigger ───────────────────────────────────────────────────────────────────
-# Runs whenever glider_data.csv is pushed to the main branch.
+# Runs whenever any leg's raw CSV is added or updated in
+# static/data/glider/raw/ and pushed to main.
 # Also allows manual runs from the Actions tab.
 on:
   push:
     branches: [main]
     paths:
-      - "static/data/glider_data.csv"
+      - "static/data/glider/raw/*.csv"
   workflow_dispatch:
-
 # ── Job ───────────────────────────────────────────────────────────────────────
 jobs:
   process-and-plot:
     runs-on: ubuntu-latest
-
     permissions:
-      contents: write       # needed to push the generated files back
-
+      contents: write # needed to push the generated files back
     steps:
       # 1. Check out the full repo
       - name: Checkout repository
@@ -36,21 +33,21 @@ jobs:
         run: pip install -r scripts/requirements.txt
 
       # 4. Run the data-processing script
-      #    Reads  data/glider_data.csv
-      #    Writes data/glider_data_processed.csv
+      #    Reads  every legN_glider_data.csv in static/data/glider/raw/
+      #    Writes static/data/glider/processed/glider_data_processed.csv
       - name: Process glider data
         run: |
           python scripts/glider_data_processing.py \
-            static/data/glider_data.csv \
-            static/data/glider_data_processed.csv
+            static/data/glider/raw/ \
+            static/data/glider/processed/glider_data_processed.csv
 
       # 5. Run the plotting script
-      #    Reads  data/glider_data_processed.csv
-      #    Writes static/images/glider/*.png  (Hugo serves these automatically)
+      #    Reads  static/data/glider/processed/glider_data_processed.csv
+      #    Writes static/images/glider/*.png (Hugo serves these automatically)
       - name: Generate plots
         run: |
           python scripts/glider_plotting.py \
-            static/data/glider_data_processed.csv \
+            static/data/glider/processed/glider_data_processed.csv \
             static/images/glider
 
       # 6. Commit and push the generated files back to main
@@ -58,7 +55,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add static/data/glider_data_processed.csv static/images/glider/
+          git add static/data/glider/processed/glider_data_processed.csv static/images/glider/
           git diff --cached --quiet \
             && echo "Nothing changed — skipping commit" \
             || git commit -m "chore: auto-update glider plots [skip ci]"

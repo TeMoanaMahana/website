@@ -4,12 +4,37 @@ Welcome to the GitHub repository for the Te Moana Mahana: Ocean change forecasti
 
 Hugo is designed for simplicity and thus modification of this website is relatively straightforward.
 
+**Live site:** [https://te-moana-mahana.org](https://te-moana-mahana.org)
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Folders and Purposes](#folders-and-purposes)
+- [Building the Website on Your Machine](#building-the-website-on-your-machine)
+- [Pushing Updates](#pushing-updates)
+- [Contributing](#contributing)
+- [Troubleshooting](#troubleshooting)
+- [Hosting](#hosting)
+- [License](#license)
+
 ## Prerequisites
 
 Before getting started, make sure you have the following installed on your machine:
 
 - **Git** is required to clone the repository. Download it from [git-scm.com](https://git-scm.com/downloads) and follow the install instructions for your operating system.
 - A **terminal** (macOS/Linux) or **PowerShell** (Windows)
+
+### Required versions
+
+This site relies on the **extended** version of Hugo (needed for SCSS/CSS processing) — the standard Hugo binary will not build the site correctly. Recommended versions:
+
+| Tool    | Version               | Notes                                                 |
+| ------- | --------------------- | ----------------------------------------------------- |
+| Hugo    | `v0.164.0` (extended) |                                                       |
+| Node.js | `v26.5.0` (LTS)       |                                                       |
+| Go      | `v1.25.5`             | Only required if extending/modifying the theme itself |
+
+If you're using a version manager, `nvm install --lts` for Node and `brew install hugo` (which installs the extended version by default on macOS) are good starting points.
 
 ## Folders and Purposes
 
@@ -39,13 +64,13 @@ Config contains several general parameters (all of which are stored in .toml fil
 
 <summary>Content</summary>
 
-This is the bread and butter of the Hugo framework. Within this folder (**content/english/**) is the entirety of the 'content' of the website. Each webpage is divided into their own directory, with all of the content written in a markdown (.md) format with a .yaml header. The main content for that webpage is ***always*** stored within a file called **_index.md**, with adjacent comments within each file.
+This is the bread and butter of the Hugo framework. Within this folder (**content/english/**) is the entirety of the 'content' of the website. Each webpage is divided into their own directory, with all of the content written in a markdown (.md) format with a .yaml header. The main content for that webpage is **_always_** stored within a file called **\_index.md**, with adjacent comments within each file.
 
-- For example, within **content/english/blog/** are several .md files. The main **_index.md** is present, which defines the webpage, with each blog post getting its own .md file, the name of which is reflected in the url for that blog post.
+- For example, within **content/english/blog/** are several .md files. The main **\_index.md** is present, which defines the webpage, with each blog post getting its own .md file, the name of which is reflected in the url for that blog post.
 
-- Another example is that of the **authors/** directory, which again contains the **_index.md** file and then a separate markdown file for each team member. Within the yaml at the top of these markdown files, you will find that several parameters are defined, such as the title of the page, the last name (used for ordering), their role, the portrait image used for that team member, and their social links that are highlighted on their page.
+- Another example is that of the **authors/** directory, which again contains the **\_index.md** file and then a separate markdown file for each team member. Within the yaml at the top of these markdown files, you will find that several parameters are defined, such as the title of the page, the last name (used for ordering), their role, the portrait image used for that team member, and their social links that are highlighted on their page.
 
-Within the main **content/english/** page, you will find a **_index.md** file. This file contains all of the yaml for the home page of the website.
+Within the main **content/english/** page, you will find a **\_index.md** file. This file contains all of the yaml for the home page of the website.
 
 </details>
 
@@ -69,7 +94,7 @@ Layouts contain all of the custom .html that was used to create this website tha
 
 As you will notice, there are several subdirectories in here.
 
-- **_partials/** includes several elements that are used within other .html files, such as widgets, headers, and the landing page map.
+- **\_partials/** includes several elements that are used within other .html files, such as widgets, headers, and the landing page map.
 
 - **authors/, blog/, publications/** all contain various .html files that are used to define how their respective pages are laid out.
 
@@ -92,6 +117,8 @@ In addition to these directories, there are several .html files within **layouts
 <summary>Scripts</summary>
 
 This directory holds several scripts that are used in the function of the website. Most came with the Hugoplate template, with the two python scripts, **glider_data_processing.py** and **glider_plotting.py**, along with the associated **requirements.txt** files were added to allow for recurrent running and updating of the glider data.
+
+These scripts run automatically via GitHub Action upon uploading of a new legX_glider_data.csv to the repository. There is a requirements.txt file within this directory that instructs the GitHub Action bot on which python packages are needed to be install before running these scripts.
 
 </details>
 
@@ -117,7 +144,7 @@ The only other file that may need to be adjusted is that of the **hugo.toml** fi
 
 This website was built using a macOS machine, and thus instructions for UNIX (macOS/Linux) machines are at the top with instructions for Windows machines below.
 
-***NOTE***
+**_NOTE_**
 This step does require the use of the terminal. The terminal is an essential part of your computer and don't be scared!! Simply copy and paste the commands and if you get an error, consult documentation online or ask a suitable AI chatbot for help. The terminal is a great way to run programmes!!
 
 ### First Steps
@@ -168,8 +195,8 @@ npm run dev
 
 This will create a locally hosted site with the url "http://localhost:1313" on your machine. You can access this url on any regular browser and start developing! When a file is changed within the repository, the website should automatically reload and your changes should be reflected.
 
-***NOTE***
-Some changes require the site to be rebuilt, in which case, cancel the ```npm run dev``` command with ctrl-c, and re-run ```npm run dev```
+**_NOTE_**
+Some changes require the site to be rebuilt, in which case, cancel the `npm run dev` command with ctrl-c, and re-run `npm run dev`
 
 ### Windows
 
@@ -181,7 +208,7 @@ The instructions below involve the use of chocolatey, a popular package manager 
 
 1. Follow the instructions for installing chocolatey via [this link](https://chocolatey.org/install) or via the steps below:
 
-2. Open powershell.exe and run ```Get-ExecutionPolicy```. If the return is ```Restricted```, then run ```Set-ExecutionPolicy AllSigned``` or ```Set-ExecutionPolicy Bypass -Scope Process```.
+2. Open powershell.exe and run `Get-ExecutionPolicy`. If the return is `Restricted`, then run `Set-ExecutionPolicy AllSigned` or `Set-ExecutionPolicy Bypass -Scope Process`.
 
 3. Next, run the command below:
 
@@ -209,8 +236,8 @@ npm run dev
 
 This will create a locally hosted site with the url "http://localhost:1313" on your machine. You can access this url on any regular browser and start developing! When a file is changed within the repository, the website should automatically reload and your changes should be reflected.
 
-***NOTE***
-Some changes require the site to be rebuilt, in which case, cancel the ```npm run dev``` command with ctrl-c, and re-run ```npm run dev```
+**_NOTE_**
+Some changes require the site to be rebuilt, in which case, cancel the `npm run dev` command with ctrl-c, and re-run `npm run dev`
 
 ## Pushing Updates
 
@@ -219,20 +246,61 @@ Once you have made your changes, you'll need to push them back to GitHub. The th
 ```
 git add .
 ```
+
 Stages all of your changes, marking them as ready to be committed.
 
 ```
 git commit -m "a short description of your changes"
 ```
+
 Saves a snapshot of your staged changes with a message describing what you did.
 
 ```
 git push
 ```
+
 Uploads your committed changes to GitHub.
 
 For a more complete reference, including details on the initial setup and connection to your remote repository, see the [official Git documentation](https://git-scm.com/docs). If you'd prefer a visual interface to avoid memorising commands, [lazygit](https://github.com/jesseduffield/lazygit) is a great CLI tool that makes this much easier. It can be installed on UNIX machines via Homebrew (`brew install lazygit`) or on Windows via chocolatey (`choco install lazygit`).
 
+## Contributing
+
+We welcome contributions from the Te Moana Mahana team. If you'd like to make a change:
+
+1. Create a new branch for your change rather than committing directly to `main`:
+   ```
+   git checkout -b your-name/short-description
+   ```
+2. Make your changes and test them locally with `npm run dev` before pushing.
+3. Push your branch and open a Pull Request on GitHub, with a short description of what changed and why.
+4. Where possible, have someone else review the PR before merging, especially for changes to `layouts/`, `data/theme.json`, or `hugo.toml`.
+
+Otherwise, you can send me an email and I can action this change.
+
+## Troubleshooting
+
+**`npm run dev` fails immediately or with a version error**
+Check your Node.js version matches the one listed under [Prerequisites](#prerequisites). Consider using `nvm` to switch versions per-project.
+
+**Site builds but CSS/styling looks broken or missing**
+Confirm you have the **extended** version of Hugo installed, not the standard version — run `hugo version` and check the output includes "extended".
+
+**"Port 1313 already in use" error**
+A previous `npm run dev` process may still be running. Stop it with `ctrl-c` in its terminal window, or find and kill the process manually, then retry.
+
+**Changes aren't showing up in the browser**
+Some config changes (e.g. to `hugo.toml` or files in `config/`) aren't picked up by the live-reload watcher. Stop the dev server (`ctrl-c`) and re-run `npm run dev`.
+
+**Links are broken after publishing**
+Double-check the `baseURL` variable at the top of `hugo.toml` is set to the correct live URL before your final build/deploy.
+
+**Still stuck?**
+Search the error message alongside "Hugo" in the [Hugo documentation](https://gohugo.io/documentation/) or [Hugo's community forum](https://discourse.gohugo.io/), or ask a suitable AI chatbot for help — pasting the exact error message usually gets a useful answer quickly.
+
 ## Hosting
 
 This website is hosted directly on GitHub Pages for free. More information can be found on the [official Hugo documentation website for hosting with GitHub Pages](https://gohugo.io/host-and-deploy/host-on-github-pages/).
+
+## License
+
+This project is released under the **MIT** license, in keeping with our commitment to free and open data and resources. See the [license](LICENSE) file in this repository for full details.
