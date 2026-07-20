@@ -6,7 +6,6 @@ import gsw
 import re
 import sys
 
-# Paths
 INPUT_FILE  = Path("static/data/glider/processed/glider_data_processed.csv")
 OUTPUT_DIR  = Path("static/images/glider")
 if len(sys.argv) >= 2:
@@ -15,12 +14,10 @@ if len(sys.argv) >= 3:
     OUTPUT_DIR = Path(sys.argv[2])
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# Style
 label_size  = 12
 tick_size   = 10
 font_weight = "bold"
 
-# Load data
 df = pd.read_csv(INPUT_FILE)
 df = df.rename(columns={
     "Temperature [degC]":        "Temperature (°C)",
@@ -40,14 +37,9 @@ cmap_map = {
     "Chlorophyll-a (µg/L)":                      "BuGn",
 }
 
-# Columns: Leg_Index, Timestamp (NZ), Timestamp (UTC), Longitude, Latitude,
-# Pressure [dBar], then the sensor data columns.
-# NOTE: this assumes that fixed column layout. If the input CSV's column
-# order ever changes, update the positional indices below (or better,
-# switch to df["Actual Column Name"] once you confirm the exact names).
-TIME_COL_POS     = 2  # "Timestamp (UTC)"
-LAT_COL_POS      = 4  # "Latitude"
-PRESSURE_COL_POS = 5  # "Pressure [dBar]"
+TIME_COL_POS     = 2  
+LAT_COL_POS      = 4  
+PRESSURE_COL_POS = 5  
 DATA_COLS_START  = 6
 
 data_cols = df.columns[DATA_COLS_START:]
@@ -66,7 +58,6 @@ for leg in legs:
     leg_out_dir = OUTPUT_DIR / f"leg{int(leg)}"
     leg_out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Derived columns (per leg)
     time     = pd.to_datetime(leg_df.iloc[:, TIME_COL_POS], unit="s", utc=True).dt.tz_convert("Pacific/Auckland")
     pressure = leg_df.iloc[:, PRESSURE_COL_POS]
     lat_val  = leg_df.iloc[:, LAT_COL_POS].median()
