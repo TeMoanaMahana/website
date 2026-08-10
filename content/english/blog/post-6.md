@@ -1,5 +1,5 @@
 ---
-title: "New PhD Position in the Project"
+title: "Ocean Impacts on Climate Prediciton PhD Position"
 meta_title: ""
 description: "New PhD position is being advertised"
 date: 2026-07-17T09:30:00+13:00
