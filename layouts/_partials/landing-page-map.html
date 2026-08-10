@@ -1,10 +1,10 @@
-{{/* Copernicus Marine SST anomaly map */}}
+{{/* Copernicus Marine layer map */}}
 <section class="section">
   <div class="container">
     <div class="row">
       <div class="col-12">
         <h2 class="mb-8 text-center">
-          Near Real Time Sea Surface Temperature Anomaly
+          Near Real Time Ocean Conditions
         </h2>
 
         <link
@@ -25,23 +25,14 @@
           ></div>
         </div>
 
-        <p class="mt-4 text-center text-sm">
-          The anomaly is today's sea surface temperature compared to a monthly
-          climatology baseline covering the period 1993-2016. Data is updated
-          daily courtesy of
-          <a
+        <p class="mt-4 text-center text-sm" id="mapCaption">
+          Data updated daily courtesy of
+          
             href="https://marine.copernicus.eu/"
             target="_blank"
             rel="noopener"
             class="underline"
             >Copernicus Marine Service (CMEMS)</a
-          >. Read more on the
-          <a
-            href="https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description"
-            target="_blank"
-            rel="noopener"
-            class="underline"
-            >CMEMS product page</a
           >.
         </p>
 
@@ -50,6 +41,53 @@
         <script>
           (function () {
             document.addEventListener("DOMContentLoaded", function () {
+              const LAYERS = [
+                {
+                  name: "Sea Surface Temperature Anomaly",
+                  layer:
+                    "GLOBAL_ANALYSISFORECAST_PHY_001_024/cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411/sea_surface_temperature_anomaly",
+                  style: "cmap:balance,range:-6/6",
+                  caption:
+                    "Today's sea surface temperature compared to a monthly climatology baseline (1993-2016).",
+                  legend: { wrapperWidth: 110, imgWidth: 160 },
+                },
+                {
+                  name: "Sea Surface Temperature",
+                  layer:
+                    "GLOBAL_ANALYSISFORECAST_PHY_001_024/cmems_mod_glo_phy_anfc_0.083deg_PT1H-m_202406/thetao",
+                  style: "cmap:thermal",
+                  caption: "Sea surface temperature.",
+                  legend: { wrapperWidth: 110, imgWidth: 160 },
+                },
+                {
+                  name: "Salinity",
+                  layer:
+                    "GLOBAL_ANALYSISFORECAST_PHY_001_024/cmems_mod_glo_phy_anfc_0.083deg_PT1H-m_202406/so",
+                  style: "cmap:haline",
+                  caption: "Sea surface salinity.",
+                  legend: { wrapperWidth: 110, imgWidth: 160 },
+                },
+                {
+                  name: "Chlorophyll-a",
+                  layer:
+                    "GLOBAL_ANALYSISFORECAST_BGC_001_028/cmems_mod_glo_bgc-pft_anfc_0.25deg_P1D-m_202311/chl",
+                  style: "cmap:algae",
+                  caption: "Surface chlorophyll-a concentration.",
+                  legend: { wrapperWidth: 120, imgWidth: 160 },
+                 }, 
+                {
+                  name: "Sea Water Velocity",
+                  layer:
+                    "GLOBAL_ANALYSISFORECAST_PHY_001_024/cmems_mod_glo_phy_anfc_0.083deg_PT1H-m_202406/sea_water_velocity",
+                  style: "cmap:speed,vectorStyle:solidAndVector",
+                  caption: "Surface sea water velocity.",
+                  legend: { wrapperWidth: 110, imgWidth: 160 },
+                }
+              ];
+
+              let currentLayerIndex = 0;
+              let activeTileLayer = null;
+
               const map = L.map("sstAnomalyMap", {
                 center: [-41.2710849, 173.2836756],
                 zoom: 3,
@@ -154,6 +192,45 @@
                 { passive: true },
               );
 
+              const layerControl = document.createElement("div");
+              layerControl.className = "map-glass-light";
+              Object.assign(layerControl.style, {
+                position: "absolute",
+                top: "12px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: "1001",
+                padding: "4px 4px",
+                borderRadius: "20px",
+              });
+
+              const select = document.createElement("select");
+              Object.assign(select.style, {
+                border: "none",
+                background: "transparent",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "pointer",
+                outline: "none",
+              });
+
+              LAYERS.forEach((layerDef, idx) => {
+                const opt = document.createElement("option");
+                opt.value = idx;
+                opt.textContent = layerDef.name;
+                select.appendChild(opt);
+              });
+
+              select.addEventListener("change", function () {
+                currentLayerIndex = parseInt(this.value, 10);
+                setLayer(currentLayerIndex);
+              });
+
+              layerControl.appendChild(select);
+              container.appendChild(layerControl);
+              L.DomEvent.disableClickPropagation(layerControl);
+              L.DomEvent.disableScrollPropagation(layerControl);
+
               const colorbar = document.createElement("div");
               colorbar.className = "map-glass-light";
               Object.assign(colorbar.style, {
@@ -173,33 +250,25 @@
 
               const imgWrapper = document.createElement("div");
               Object.assign(imgWrapper.style, {
-                width: "110px", // ← adjust this to clip the right whitespace
                 height: "400px",
                 overflow: "hidden",
                 borderRadius: "15px",
-                flexShrink: "0", // prevent the flex colorbar container from squishing the wrapper
+                flexShrink: "0",
               });
 
               const img = document.createElement("img");
-              img.src =
-                "https://wmts.marine.copernicus.eu/teroWmts" +
-                "?SERVICE=WMTS" +
-                "&REQUEST=GetLegend" +
-                "&LAYER=GLOBAL_ANALYSISFORECAST_PHY_001_024%2F" +
-                "cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411%2F" +
-                "sea_surface_temperature_anomaly" +
-                "&STYLE=cmap:balance,range:-5/5";
-              img.alt = "SST Anomaly colorbar";
+              img.alt = "Layer colorbar";
               Object.assign(img.style, {
                 display: "block",
                 width: "160px",
-                maxWidth: "none", // ← overrides Tailwind's max-width: 100% — this was causing the squish
+                maxWidth: "none",
                 height: "400px",
               });
 
               imgWrapper.appendChild(img);
               colorbar.appendChild(imgWrapper);
               container.appendChild(colorbar);
+              L.DomEvent.disableClickPropagation(colorbar);
 
               const isMobile = () =>
                 window.matchMedia("(max-width: 768px)").matches;
@@ -239,6 +308,7 @@
               });
 
               container.appendChild(toggleBtn);
+              L.DomEvent.disableClickPropagation(toggleBtn);
 
               function applyResponsiveState() {
                 if (isMobile()) {
@@ -261,45 +331,88 @@
               applyResponsiveState();
               window.addEventListener("resize", applyResponsiveState);
 
-              const wmtsUrl =
-                "https://wmts.marine.copernicus.eu/teroWmts" +
-                "?SERVICE=WMTS" +
-                "&REQUEST=GetTile" +
-                "&LAYER=GLOBAL_ANALYSISFORECAST_PHY_001_024%2F" +
-                "cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411%2F" +
-                "sea_surface_temperature_anomaly" +
-                "&STYLE=cmap:balance,range:-5/5" +
-                "&FORMAT=image%2Fpng" +
-                "&TILEMATRIXSET=EPSG:3857" +
-                "&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}";
+              function buildTileUrl(layerDef) {
+                return (
+                  "https://wmts.marine.copernicus.eu/teroWmts" +
+                  "?SERVICE=WMTS" +
+                  "&REQUEST=GetTile" +
+                  "&LAYER=" +
+                  encodeURIComponent(layerDef.layer) +
+                  "&STYLE=" +
+                  layerDef.style +
+                  "&FORMAT=image%2Fpng" +
+                  "&TILEMATRIXSET=EPSG:3857" +
+                  "&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+                );
+              }
 
-              L.tileLayer(wmtsUrl, {
-                attribution: "Copernicus Marine Service (CMEMS)",
-                transparent: true,
-                opacity: 1,
-                maxZoom: 10,
-              }).addTo(map);
+              function buildLegendUrl(layerDef) {
+                return (
+                  "https://wmts.marine.copernicus.eu/teroWmts" +
+                  "?SERVICE=WMTS" +
+                  "&REQUEST=GetLegend" +
+                  "&LAYER=" +
+                  encodeURIComponent(layerDef.layer) +
+                  "&STYLE=" +
+                  layerDef.style
+                );
+              }
+
+              const caption = document.getElementById("mapCaption");
+
+              function setLayer(idx) {
+                const layerDef = LAYERS[idx];
+
+                if (activeTileLayer) {
+                  map.removeLayer(activeTileLayer);
+                }
+
+                activeTileLayer = L.tileLayer(buildTileUrl(layerDef), {
+                  attribution: "Copernicus Marine Service (CMEMS)",
+                  transparent: true,
+                  opacity: 1,
+                  maxZoom: 10,
+                }).addTo(map);
+
+                if (window.__mapOverlayLayers) {
+                  window.__mapOverlayLayers.forEach((l) => l.bringToFront());
+                }
+
+                const legendSize = layerDef.legend || { wrapperWidth: 110, imgWidth: 160 };
+                imgWrapper.style.width = legendSize.wrapperWidth + "px";
+                img.style.width = legendSize.imgWidth + "px";
+
+
+                img.src = buildLegendUrl(layerDef);
+
+                if (caption && layerDef.caption) {
+                  caption.innerHTML =
+                    layerDef.caption +
+                    ' Data updated daily courtesy of <a href="https://marine.copernicus.eu/" target="_blank" rel="noopener" class="underline">Copernicus Marine Service (CMEMS)</a>.';
+                }
+              }
 
               map.on("click", function (e) {
                 const wrappedLatLng = e.latlng.wrap();
-
                 const zoom = map.getZoom();
-
                 const point = map.project(wrappedLatLng, zoom);
                 const tileSize = 256;
-
                 const tileCol = Math.floor(point.x / tileSize);
                 const tileRow = Math.floor(point.y / tileSize);
-
                 const i = Math.floor(point.x % tileSize);
                 const j = Math.floor(point.y % tileSize);
 
-                const infoUrl = `https://wmts.marine.copernicus.eu/teroWmts/?service=WMTS&request=GetFeatureInfo&layer=GLOBAL_ANALYSISFORECAST_PHY_001_024/cmems_mod_glo_phy_anfc_0.083deg-sst-anomaly_P1D-m_202411/sea_surface_temperature_anomaly&tilematrixset=EPSG:3857&tilematrix=${zoom}&tilerow=${tileRow}&tilecol=${tileCol}&i=${i}&j=${j}&INFOFORMAT=text/html`;
+                const layerDef = LAYERS[currentLayerIndex];
+                const infoUrl =
+                  `https://wmts.marine.copernicus.eu/teroWmts/?service=WMTS&request=GetFeatureInfo` +
+                  `&layer=${encodeURIComponent(layerDef.layer)}` +
+                  `&tilematrixset=EPSG:3857&tilematrix=${zoom}&tilerow=${tileRow}&tilecol=${tileCol}` +
+                  `&i=${i}&j=${j}&INFOFORMAT=text/html`;
 
-                const popup = L.popup()
+                const popup = L.popup({ className: 'glass-popup'})
                   .setLatLng(e.latlng)
                   .setContent(
-                    "<div style='text-align:center; padding:4px;'><em>Fetching temperature...</em></div>",
+                    "<div style='text-align:center; padding:4px;'><em>Fetching value...</em></div>",
                   )
                   .openOn(map);
 
@@ -311,7 +424,7 @@
                       const doc = parser.parseFromString(html, "text/html");
                       const rows = doc.querySelectorAll("tr");
 
-                      let tempValue = null;
+                      let value = null;
 
                       if (rows.length >= 2) {
                         const headers = rows[0].querySelectorAll("th, td");
@@ -328,20 +441,20 @@
                         if (valueIndex !== -1) {
                           const dataCells = rows[1].querySelectorAll("th, td");
                           if (dataCells.length > valueIndex) {
-                            tempValue = parseFloat(
+                            value = parseFloat(
                               dataCells[valueIndex].textContent.trim(),
                             ).toFixed(2);
                           }
                         }
                       }
 
-                      if (tempValue !== null && !isNaN(tempValue)) {
+                      if (value !== null && !isNaN(value)) {
                         popup.setContent(
-                          `<div style="text-align:center; padding:4px; font-size:14px;"><strong>Temperature Anomaly</strong><br>${tempValue} °C</div>`,
+                          `<div style="text-align:center; padding:4px; font-size:14px;"><strong>${LAYERS[currentLayerIndex].name}</strong><br>${value}</div>`,
                         );
                       } else {
                         popup.setContent(
-                          "<div style='text-align:center; padding:4px;'>No temperature data here.</div>",
+                          "<div style='text-align:center; padding:4px;'>No data here.</div>",
                         );
                       }
                     } else {
@@ -366,24 +479,86 @@
               };
 
               function addLandAtOffset(data, lngOffset) {
-                L.geoJSON(data, {
+                const l = L.geoJSON(data, {
                   coordsToLatLng: function (coords) {
                     return new L.LatLng(coords[1], coords[0] + lngOffset);
                   },
                   style: landStyle,
                 }).addTo(map);
+                window.__mapOverlayLayers.push(l);
               }
+
+              const riverStyle = {
+                fillOpacity: 0,
+                color: "#519ccc",
+                weight: 1,
+              };
+
+              function addRiverAtOffset(data, lngOffset) {
+                const l = L.geoJSON(data, {
+                  coordsToLatLng: function (coords) {
+                    return new L.LatLng(coords[1], coords[0] + lngOffset);
+                  },
+                  style: riverStyle,
+                }).addTo(map);
+                window.__mapOverlayLayers.push(l);
+              }
+
+              const lakeStyle = {
+                fillColor: "#519ccc",
+                fillOpacity: 1,
+                color: "#519ccc",
+                weight: 1,
+              };
+
+              function addLakeAtOffset(data, lngOffset) {
+                const l = L.geoJSON(data, {
+                  coordsToLatLng: function (coords) {
+                    return new L.LatLng(coords[1], coords[0] + lngOffset);
+                  },
+                  style: lakeStyle,
+                }).addTo(map);
+                window.__mapOverlayLayers.push(l);
+              }
+
+              window.__mapOverlayLayers = [];
+
+              setLayer(currentLayerIndex);
 
               fetch(
                 "https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/10m/physical/ne_10m_land.json",
               )
                 .then((res) => res.json())
-                .then((data) => {
-                  addLandAtOffset(data, -720);
-                  addLandAtOffset(data, -360);
-                  addLandAtOffset(data, 0);
-                  addLandAtOffset(data, 360);
-                  addLandAtOffset(data, 720);
+                .then((landData) => {
+                  addLandAtOffset(landData, -720);
+                  addLandAtOffset(landData, -360);
+                  addLandAtOffset(landData, 0);
+                  addLandAtOffset(landData, 360);
+                  addLandAtOffset(landData, 720);
+
+                  return fetch(
+                    "https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/10m/physical/ne_10m_rivers_lake_centerlines.json",
+                  );
+                })
+                .then((res) => res.json())
+                .then((riverData) => {
+                  addRiverAtOffset(riverData, -720);
+                  addRiverAtOffset(riverData, -360);
+                  addRiverAtOffset(riverData, 0);
+                  addRiverAtOffset(riverData, 360);
+                  addRiverAtOffset(riverData, 720);
+
+                  return fetch(
+                    "https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/10m/physical/ne_10m_lakes.json",
+                  );
+                })
+                .then((res) => res.json())
+                .then((lakeData) => {
+                  addLakeAtOffset(lakeData, -720);
+                  addLakeAtOffset(lakeData, -360);
+                  addLakeAtOffset(lakeData, 0);
+                  addLakeAtOffset(lakeData, 360);
+                  addLakeAtOffset(lakeData, 720);
                 });
             });
           })();

@@ -217,7 +217,7 @@
               id="glider-plot-img"
               src="${imgSrc}"
               alt="${activeKey}"
-              style="width: 100%; border-radius: 6px; display: block; cursor: pointer;" />
+              style="width: 100%; aspect-ratio: 1227 / 712; object-fit: contain; border-radius: 6px; display: block; cursor: pointer; background: rgba(0,0,0,0.04);" />
           </a>
         </div>`;
     }
@@ -239,6 +239,11 @@
       if (e.popup !== trackPopup) return;
 
       const popupContainer = e.popup.getElement();
+      const img = popupContainer.querySelector('#glider-plot-img');
+
+      const repan = () => e.popup._adjustPan && e.popup._adjustPan();
+      img.addEventListener('load', repan, { once: true });
+
       popupContainer.addEventListener('click', function(evt) {
         const btn = evt.target.closest('[data-plot-key]');
         if (!btn || activePopupLeg === null) return;
@@ -246,7 +251,9 @@
         const key = btn.dataset.plotKey;
         const imgSrc = `${PLOT_BASE}leg${activePopupLeg}/${key}.png`;
 
-        popupContainer.querySelector('#glider-plot-img').src = imgSrc;
+        const newImg = popupContainer.querySelector('#glider-plot-img');
+        newImg.addEventListener('load', repan, { once: true });
+        newImg.src = imgSrc;
         popupContainer.querySelector('#glider-plot-link').href = imgSrc;
 
         popupContainer.querySelectorAll('[data-plot-key]').forEach(b => {
