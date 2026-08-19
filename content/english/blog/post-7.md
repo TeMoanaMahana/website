@@ -2,7 +2,7 @@
 title: "Impact of Extreme Weather Events on Shelf-Sea Physics PhD Position"
 meta_title: ""
 description: "New PhD position is being advertised"
-date: 2026-08-11T11:30:00+13:00
+date: 2026-08-10T11:30:00+13:00
 image: "/images/blog/place-holder.png"
 header_theme: "dark"
 categories: ["Positions"]

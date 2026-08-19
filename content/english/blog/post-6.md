@@ -10,7 +10,7 @@ tags: ["positions"]
 draft: false
 ---
 
-The Te Moana Mahana project recently opened a new PhD position for aspiring doctoral fellows to pursue their research in physical oceanography. This position is summarised below. To see the full PhD advertisement, please follow [**this link.**](/documents/PhD_Ocean_Atmosphere_Interaction_16July.pdf)
+The Te Moana Mahana project recently opened a new PhD position for aspiring doctoral fellows to pursue their research in physical oceanography. This position is summarised below. To see the full PhD advertisement, please follow [**this link.**](/documents/PhD_Ocean_Atmosphere_Interaction_20260820.pdf)
 
 #### Ocean Impacts on New Zealand Climate Prediction
 
@@ -26,9 +26,9 @@ This PhD is funded by the Te Moana Mahana project and will support the activitie
 
 ##### Key Dates
 
-- **Closing dates for applications**: 31 August, 4:00pm NZDT.
+- **Closing dates for applications**: 15 September, 4:00pm NZDT.
 - **Early-September 2026:** Interviews with shortlisted candidates.
 - **End-September 2026:** Candidate selected.
 - **Candidature commencement date:** Ideally March 2027
 
-Please find more details about the project and the application process in the [**attached .pdf file**](/documents/PhD_Ocean_Atmosphere_Interaction_16July.pdf). Please contact [**Melissa Bowen**](mailto:m.bowen@auckland.ac.nz) if you require more information.
+Please find more details about the project and the application process in the [**attached .pdf file**](/documents/PhD_Ocean_Atmosphere_Interaction_20260820.pdf). Please contact [**Melissa Bowen**](mailto:m.bowen@auckland.ac.nz) if you require more information.
