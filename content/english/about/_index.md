@@ -24,6 +24,9 @@ partners:
     - name: "CSIRO"
       link: "https://www.csiro.au"
       logo: "images/partners/csiro.png"
+    - name: "AMOS"
+      link: "https://amos.org.nz/"
+      logo: "images/partners/amos.png"
 supporting_orgs:
   statement: ""
   list:
@@ -62,36 +65,36 @@ about_sections:
     image: "images/gallery/mitaOcean.png"
     content: |
       This project investigates where and why our regional oceans are warming. By integrating satellite data, robotic floats, and shipboard surveys with the innovative BlueMaps data assimilation technique, the project will map heat in the region and the connection between the deep and coastal oceans.
-      
+
       Key outcomes include:
 
       - **Deep Ocean Temperature Changes and Driving Mechanisms:** Combine measurements using new mapping techniques and investigate how ocean currents, wind patterns, and bathymetry influence heat storage and transport.
 
-      - **Coastal Ocean Temperatures:** Developing a high-resolution coastal reanalysis from the Maui glider surveys and data collected from fishing vessels (collected by the Mangōpare programme) to identify the coastal “heatscape”.
+      - **Coastal Ocean Temperatures:** Developing a high-resolution coastal reanalysis from the Maui glider surveys and data collected collected by the [Mangōpare programme](https://amos.org.nz/), which is now proudly funded by our project, to identify the coastal heatscape.
   - title: "Ocean of the Future"
     image: "images/gallery/boatOcean.png"
     content: |
-     This project brings global climate information to the finer scales needed for decisions in Aotearoa New Zealand.
-    
-      Key outcomes include:
+      This project brings global climate information to the finer scales needed for decisions in Aotearoa New Zealand.
 
-      - **High-Resolution Ocean Downscaling:** Transforming global projections of the ocean into local projections by resolving the narrow ocean currents and regional temperature extremes that global models miss.
-      
-      - **Machine Learning Forecasts for Sea Surface Temperature:** Using “past analogues”—searching historical data for patterns similar to current conditions—to predict sea surface temperatures (SST) and quantify uncertainty.
-      
-      - **Coupled Weather Modeling of storm and coastal ocean interactions:** Simulating the interaction between the atmosphere and a warming ocean at scales under 100km to understand how ocean heat strengthens “atmospheric rivers,” tropical cyclones, and extreme rainfall and how evolving coastal temperatures during a storm can modify the severity and path of weather events as they make landfall.
+       Key outcomes include:
+
+       - **High-Resolution Ocean Downscaling:** Transforming global projections of the ocean into local projections by resolving the narrow ocean currents and regional temperature extremes that global models miss.
+       
+       - **Machine Learning Forecasts for Sea Surface Temperature:** Using “past analogues”—searching historical data for patterns similar to current conditions—to predict sea surface temperatures (SST) and quantify uncertainty.
+       
+       - **Coupled Weather Modeling of storm and coastal ocean interactions:** Simulating the interaction between the atmosphere and a warming ocean at scales under 100km to understand how ocean heat strengthens “atmospheric rivers,” tropical cyclones, and extreme rainfall and how evolving coastal temperatures during a storm can modify the severity and path of weather events as they make landfall.
   - title: "Ocean Impacts"
     image: "images/gallery/planeOcean.png"
     content: |
-     This initiative examines how shifts in ocean physics—such as warming and freshwater runoff—alter the oxygen and nutrients in our ocean that underpin biological health. 
+      This initiative examines how shifts in ocean physics—such as warming and freshwater runoff—alter the oxygen and nutrients in our ocean that underpin biological health. 
 
-      Key outcomes include:
+       Key outcomes include:
 
-      - **Nutrient Cycling via Cyclones:** Investigating how strengthening tropical cyclones pull nutrient-rich deep water to the surface, triggering phytoplankton blooms in nutrient-poor regions.
+       - **Nutrient Cycling via Cyclones:** Investigating how strengthening tropical cyclones pull nutrient-rich deep water to the surface, triggering phytoplankton blooms in nutrient-poor regions.
 
-      - **Deoxygenation Pathways:** Tracking how waters with less dissolved oxygen move below the surface to create low oxygen zones that threaten the survival of fish and marine bacteria.
+       - **Deoxygenation Pathways:** Tracking how waters with less dissolved oxygen move below the surface to create low oxygen zones that threaten the survival of fish and marine bacteria.
 
-      - **Impacts of Extreme Events in the Coastal Ocean:** Impacts of weather events will be investigated in detail in two coastal areas, the Hauraki Gulf and the Otago Shelf, with new measurements and high-resolution, numerical simulations of the ocean physical and biogeochemical properties.
+       - **Impacts of Extreme Events in the Coastal Ocean:** Impacts of weather events will be investigated in detail in two coastal areas, the Hauraki Gulf and the Otago Shelf, with new measurements and high-resolution, numerical simulations of the ocean physical and biogeochemical properties.
   - title: "Ocean Connections"
     image: "images/gallery/whatipuOcean.png"
     content: |
