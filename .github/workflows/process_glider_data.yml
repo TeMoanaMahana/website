@@ -58,5 +58,5 @@ jobs:
           git add static/data/glider/processed/glider_data_processed.csv static/images/glider/
           git diff --cached --quiet \
             && echo "Nothing changed — skipping commit" \
-            || git commit -m "chore: auto-update glider plots [skip ci]"
+            || git commit -m "chore: auto-update glider plots"
           git push
