@@ -1,26 +1,19 @@
 name: Process Glider Data
-# ── Trigger ───────────────────────────────────────────────────────────────────
-# Runs whenever any leg's raw CSV is added or updated in
-# static/data/glider/raw/ and pushed to main.
-# Also allows manual runs from the Actions tab.
 on:
   push:
     branches: [main]
     paths:
       - "static/data/glider/raw/*.csv"
   workflow_dispatch:
-# ── Job ───────────────────────────────────────────────────────────────────────
 jobs:
   process-and-plot:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # needed to push the generated files back
+      contents: write
     steps:
-      # 1. Check out the full repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Set up Python
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
@@ -28,29 +21,21 @@ jobs:
           cache: pip
           cache-dependency-path: scripts/requirements.txt
 
-      # 3. Install Python dependencies
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      # 4. Run the data-processing script
-      #    Reads  every legN_glider_data.csv in static/data/glider/raw/
-      #    Writes static/data/glider/processed/glider_data_processed.csv
       - name: Process glider data
         run: |
           python scripts/glider_data_processing.py \
             static/data/glider/raw/ \
             static/data/glider/processed/glider_data_processed.csv
 
-      # 5. Run the plotting script
-      #    Reads  static/data/glider/processed/glider_data_processed.csv
-      #    Writes static/images/glider/*.png (Hugo serves these automatically)
       - name: Generate plots
         run: |
           python scripts/glider_plotting.py \
             static/data/glider/processed/glider_data_processed.csv \
             static/images/glider
 
-      # 6. Commit and push the generated files back to main
       - name: Commit generated outputs
         run: |
           git config user.name  "github-actions[bot]"
@@ -60,14 +45,3 @@ jobs:
             && echo "Nothing changed — skipping commit" \
             || git commit -m "chore: auto-update glider plots"
           git push
-
-      # 7. Explicitly trigger the Hugo build/deploy workflow.
-      #    Needed because pushes authenticated with GITHUB_TOKEN do not
-      #    trigger other workflows' `push:` events (GitHub's loop-prevention rule).
-      - name: Trigger site rebuild
-        run: |
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/actions/workflows/hugo.yaml/dispatches \
-            -d '{"ref":"main"}'
