@@ -1,76 +1,81 @@
-{{/* Publications list page */}}
-{{ define "main" }}
-{{ partial "page-header" . }}
+{{/* Publications list page */}} {{ define "main" }} {{ partial "page-header" .
+}}
 
 <section class="section">
   <div class="container">
-
-    {{/* Filter buttons */}}
-    {{ $allTags := slice }}
-    {{ range .RegularPages }}
-      {{ range .Params.tags }}
-        {{ $allTags = $allTags | append . }}
-      {{ end }}
-    {{ end }}
-
-    {{ if gt (len ($allTags | uniq)) 0 }}
+    {{/* Filter buttons */}} {{ $allTags := slice }} {{ range .RegularPages }}
+    {{ range .Params.tags }} {{ $allTags = $allTags | append . }} {{ end }} {{
+    end }} {{ if gt (len ($allTags | uniq)) 0 }}
     <div class="flex flex-wrap justify-center gap-3 mb-12">
-      <button class="btn-glass active-btn-glass" data-filter="all">All Publications</button>
+      <button class="btn-glass active-btn-glass" data-filter="all">
+        All Publications
+      </button>
       {{ range ($allTags | uniq) }}
-        <button class="btn-glass" data-filter="{{ . | urlize }}">{{ . }}</button>
+      <button class="btn-glass" data-filter="{{ . | urlize }}">{{ . }}</button>
+      {{ end }}
+    </div>
+    {{ end }} {{/* Split publications by year */}} {{ $recent := where
+    .RegularPages "Params.year" ">=" 2025 }} {{ $previous := where .RegularPages
+    "Params.year" "<" 2025 }} {{/* 2025-and-later publications */}}
+    <div class="row" id="publications-grid">
+      {{ range sort $recent "Params.year" "desc" }} {{ $itemTags := "" }} {{
+      with .Params.tags }} {{ if reflect.IsSlice . }} {{ $slugs := slice }} {{
+      range . }}{{ $slugs = $slugs | append (. | urlize) }}{{ end }} {{
+      $itemTags = delimit $slugs " " }} {{ else }} {{ $itemTags = . | urlize }}
+      {{ end }} {{ end }}
+
+      <div class="col-12 mb-6 publication-item" data-tags="{{ $itemTags }}">
+        {{ partial "components/publication-card" . }}
+      </div>
+      {{ end }}
+    </div>
+
+    {{/* Publications before 2025 */}} {{ if gt (len $previous) 0 }}
+    <h2 class="mt-12 mb-6 text-2xl font-semibold">
+      Relevant Previous Publications
+    </h2>
+    <div class="row" id="previous-publications-grid">
+      {{ range sort $previous "Params.year" "desc" }} {{ $itemTags := "" }} {{
+      with .Params.tags }} {{ if reflect.IsSlice . }} {{ $slugs := slice }} {{
+      range . }}{{ $slugs = $slugs | append (. | urlize) }}{{ end }} {{
+      $itemTags = delimit $slugs " " }} {{ else }} {{ $itemTags = . | urlize }}
+      {{ end }} {{ end }}
+
+      <div class="col-12 mb-6 publication-item" data-tags="{{ $itemTags }}">
+        {{ partial "components/publication-card" . }}
+      </div>
       {{ end }}
     </div>
     {{ end }}
-
-    {{/* Publications sorted by year */}}
-    <div class="row" id="publications-grid">
-      {{ range sort .RegularPages "Params.year" "desc" }}
-
-        {{ $itemTags := "" }}
-        {{ with .Params.tags }}
-          {{ if reflect.IsSlice . }}
-            {{ $slugs := slice }}
-            {{ range . }}{{ $slugs = $slugs | append (. | urlize) }}{{ end }}
-            {{ $itemTags = delimit $slugs " " }}
-          {{ else }}
-            {{ $itemTags = . | urlize }}
-          {{ end }}
-        {{ end }}
-
-        <div class="col-12 mb-6 publication-item" data-tags="{{ $itemTags }}">
-          {{ partial "components/publication-card" . }}
-        </div>
-
-      {{ end }}
-    </div>
-
   </div>
 </section>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.btn-glass');
-    const items   = document.querySelectorAll('.publication-item');
+  document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".btn-glass");
+    const items = document.querySelectorAll(".publication-item");
 
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        buttons.forEach(btn => btn.classList.remove('active-btn-glass'));
-        button.classList.add('active-btn-glass');
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        buttons.forEach((btn) => btn.classList.remove("active-btn-glass"));
+        button.classList.add("active-btn-glass");
 
-        const filterValue = button.getAttribute('data-filter');
+        const filterValue = button.getAttribute("data-filter");
 
-        items.forEach(item => {
-          const itemTags = item.getAttribute('data-tags').split(' ');
-          if (filterValue === 'all' || itemTags.includes(filterValue)) {
-            item.style.display = 'block';
+        items.forEach((item) => {
+          const itemTags = item.getAttribute("data-tags").split(" ");
+          if (filterValue === "all" || itemTags.includes(filterValue)) {
+            item.style.display = "block";
             setTimeout(() => {
-              item.style.opacity = '1';
-              item.style.transform = 'translateY(0) scale(1)';
+              item.style.opacity = "1";
+              item.style.transform = "translateY(0) scale(1)";
             }, 10);
           } else {
-            item.style.opacity = '0';
-            item.style.transform = 'translateY(10px) scale(0.95)';
-            setTimeout(() => { item.style.display = 'none'; }, 300);
+            item.style.opacity = "0";
+            item.style.transform = "translateY(10px) scale(0.95)";
+            setTimeout(() => {
+              item.style.display = "none";
+            }, 300);
           }
         });
       });
