@@ -66,18 +66,10 @@
           <div class="flex flex-wrap justify-center gap-4">
             {{ with .button }}
               {{ if .enable }}
-                {{ $latest_post := index (where site.RegularPages "Section" "blog") 0 }}
-                {{ if $latest_post }}
-                  <a class="btn-glass" href="{{ $latest_post.RelPermalink }}">
-                    {{ .label }}
-                    <i class="fa fa-arrow-right pl-2"></i>
-                  </a>
-                {{ else }}
-                  <a class="btn-glass" href="{{ "blog" | relLangURL }}">
-                    {{ .label }}
-                    <i class="fa fa-arrow-right pl-2"></i>
-                  </a>
-                {{ end }}
+                <a class="btn-glass" href="{{ "blog" | relLangURL }}">
+                  {{ .label }}
+                  <i class="fa fa-arrow-right pl-2"></i>
+                </a>
               {{ end }}
             {{ end }}
             {{ with .button2 }}
