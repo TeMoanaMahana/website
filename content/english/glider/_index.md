@@ -14,8 +14,9 @@ layout: "single"
 
 - [Kaikōura Canyon and Hikurangi Trough System (Kaikōura)](/images/glider/3d_kaikoura.html)
 - [Cook Strait Canyon System (Wellington)](/images/glider/3d_wellington.html)
+- [Otago Shelf Region](/images/glider/3d_otago.html)
 
-*Please note that vertical scale in the above plots is not the same as the horizontal scale and is different between the land and ocean. The vertical scale of the ocean is increase 25x compared to the land.* ***Please see the axis values for details for elevation and horizontal distances.***
+_Please note that vertical scale in the above plots is not the same as the horizontal scale and is different between the land and ocean. The vertical scale of the ocean is increase 25x compared to the land._ **_Please see the axis values for details for elevation and horizontal distances._**
 
 ## The Maui Ocean Heat Content Mission
 
@@ -47,7 +48,7 @@ We are a team of scientists, engineers, social researchers and artists supported
 
 ### What is an ocean glider?
 
-An ocean glider is a 1.5 m long instrument package and works partly like a glider in the air. It has no propeller but unlike an airborne glider it can change its own buoyancy to go up and down in the ocean - as deep as one km.  It then uses small wings to “fly” forward through the water. However, this all happens slowly - ocean gliders move at about one km/hr - much less than walking speed, collecting data as it goes. Every time the glider surfaces it sends these new data back to base via satellite.
+An ocean glider is a 1.5 m long instrument package and works partly like a glider in the air. It has no propeller but unlike an airborne glider it can change its own buoyancy to go up and down in the ocean - as deep as one km. It then uses small wings to “fly” forward through the water. However, this all happens slowly - ocean gliders move at about one km/hr - much less than walking speed, collecting data as it goes. Every time the glider surfaces it sends these new data back to base via satellite.
 
 <div class="float-right w-1/4 ml-6 mb-4">
   {{< image src="images/gallery/sstPlot.png" alt="Plot of Sea surface temperature" class="rounded-lg" >}}
