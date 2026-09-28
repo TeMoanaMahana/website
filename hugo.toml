@@ -164,4 +164,12 @@ link = "plugins/youtube-lite.js" # https://github.com/gethugothemes/hugo-modules
 lazy = true
 
 [security.exec]
-  allow = ['^(dart-)?sass$', '^go$', '^git$', '^node$', '^postcss$', '^tailwindcss$']
+allow = [
+  '^(dart-)?sass$',
+  '^go$',
+  '^git$',
+  '^node$',
+  '^postcss$',
+  '^tailwindcss$',
+  '^npx$',
+]
