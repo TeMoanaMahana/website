@@ -72,7 +72,7 @@ jobs:
           echo "Hugo: $(hugo version)"
           echo "Node.js: $(node --version)"
       - name: Install Node.js dependencies
-        run: npm cli
+        run: npm ci
       - name: Configure Git
         run: |
           git config core.quotepath false
