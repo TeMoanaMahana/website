@@ -3,7 +3,7 @@ title: "Eleanor Haigh"
 last_name: "Haigh"
 designation: "Glider Operations"
 user_groups: "Glider Operations"
-image: "images/team/eleanor-haigh.jpg"
+image: "images/team/eleanor-haigh.JPG"
 social:
   - icon: "fa-brands fa-linkedin"
     link: "https://www.linkedin.com/in/eleanor-haigh-29b067178/"
