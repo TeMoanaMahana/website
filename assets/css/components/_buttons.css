@@ -78,3 +78,22 @@
   background-color: var(--glass-bg-dark-active-hover);
   box-shadow: var(--glass-shadow-dark-hover);
 }
+
+.dark .leaflet-popup .btn-glass-sm {
+  background-color: var(--glass-bg-light);
+  box-shadow: var(--glass-shadow-light);
+  color: var(--glass-text-light);
+}
+
+.dark .leaflet-popup .btn-glass-sm:hover {
+  background-color: var(--glass-bg-light-active-hover);
+  box-shadow: var(--glass-shadow-light-hover);
+}
+
+.dark .leaflet-popup .btn-glass-sm.active-btn-glass {
+  background-color: var(--glass-bg-light-active);
+}
+
+.dark .leaflet-popup .btn-glass-sm.active-btn-glass:hover {
+  background-color: var(--glass-bg-light-active-hover);
+}

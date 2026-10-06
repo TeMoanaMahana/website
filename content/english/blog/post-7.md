@@ -7,8 +7,10 @@ image: "/images/blog/place-holder.png"
 header_theme: "dark"
 categories: ["Positions"]
 tags: ["positions"]
-draft: false
+draft: true
 ---
+
+**_Please note that this advertisement is no longer active_**
 
 The Te Moana Mahana project recently opened a new PhD position for aspiring doctoral fellows to pursue their research in physical oceanography. This position is summarised below. To see the full PhD advertisement, please follow [**this link.**](/documents/phd-physical-ocean-weather.pdf)
 
