@@ -7,7 +7,7 @@
         <Row>
           <Column class="w-1/2">
             <Link href="https://te-moana-mahana.org/">
-              <Img src="https://te-moana-mahana.org/newsletters/2026/logo-footer-dark.png" width="160" alt="Te Moana Mahana" />
+              <Img src="https://te-moana-mahana.org/newsletter/2026/logo-footer-dark.png" width="160" alt="Te Moana Mahana" />
             </Link>
           </Column>
         </Row>
