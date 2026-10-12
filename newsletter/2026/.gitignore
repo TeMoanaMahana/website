@@ -4,3 +4,10 @@
 node_modules
 Thumbs.db
 .DS_Store
+
+# Secrets and private data - never commit these
+.env
+subscribers.txt
+
+# Build output
+dist
