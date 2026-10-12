@@ -43,6 +43,9 @@
         </Markdown>
 
         <Img src="https://raw.githubusercontent.com/TeMoanaMahana/website/main/assets/images/blog/glider-in-water.png" width="520" alt="A glider deployment" class="mb-6 rounded-lg" />
+        <Text class="mt-2 mb-6 text-center text-xs/4.5 text-gray-500 dark: text-gray-400">
+          A glider being deployed
+        </Text>
 
         <Markdown wrapper class="text-base text-gray-600 dark:text-gray-300">
           A highlight from the first year has been the collection of new data around the country. Two legs of the [Maui Glider Survey](https://te-moana-mahana.org/glider/) were completed to map the connection between the coastal and deep ocean along the east coast of the South Island. Te Moana Mahana also funded the [Aotearoa Marine Observing System](https://amos.org.nz/) to instrument gear on fishing vessels, which has delivered more than 6,000 temperature profiles in the coastal ocean in the first year alone. Both projects will continue to collect data over the next four years of the programme.
@@ -51,6 +54,9 @@
         </Markdown>
 
         <Img src="https://raw.githubusercontent.com/TeMoanaMahana/website/main/newsletter/2026/public/light-box.png" width="520" alt="Our team building an 'ocean', an activity done by Gabby O'Connor in schools" class="mb-6 rounded-lg" />
+        <Text class="mt-2 mb-6 text-center text-xs/4.5 text-gray-500 dark: text-gray-400">
+          Our team building an 'ocean', an activity done by Gabby O'Connor in schools
+        </Text>
 
         <Markdown wrapper class="text-base text-gray-600 dark:text-gray-300">
           Our project to simulate extreme weather events is off to a fast start. Postdoctoral researcher Mike Kittridge has implemented weather models and tools to track moisture in our region, leading to new understanding about what parts of the ocean are the source of rainfall over the country. His results will guide us in understanding where ocean change will impact more on our precipitation and how that might change with seasons.
