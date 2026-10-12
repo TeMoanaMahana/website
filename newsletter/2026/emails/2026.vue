@@ -32,7 +32,14 @@
           We’ve just completed the first year of our programme and progress has been excellent!
 
           We’ve made an outstanding start on all the research projects. We’ve also met with many stakeholders to discuss directions and incorporate their perspectives.
+        </Markdown>
 
+        <Img src="https://raw.githubusercontent.com/TeMoanaMahana/website/main/newsletter/2026/public/sst.png" width="520" alt="A map of SST Trends in the Southwest Pacific" class="mb-6 rounded-lg"/>
+        <Text class="mt-2 mb-6 text-center text-xs/4.5 text-gray-500 dark: text-gray-400">
+          A map of SST Trends in the Southwest Pacific from 1982 to 2024
+        </Text>
+
+        <Markdown wrapper class="text-base text-gray-600 dark:text-gray-300">
           Te Moana Mahana was created because the oceans in the New Zealand region are warming faster than the global average causing changes to weather and the coastal ocean that will challenge the resilience of our society and economy. Our programme brings together a team of oceanographers, atmospheric, and social science experts who are assessing:
           * Future coastal ocean temperatures and marine heat waves
           * Changes in extreme weather events due to the changing ocean
