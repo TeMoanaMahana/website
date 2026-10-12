@@ -71,7 +71,7 @@
           Foundational work has been completed in all the projects towards the goals. The framework for the regional and coastal ocean reanalyses has been set up and implementation on subsets of data is in progress. Preparation for running climate projections of the ocean around the country are complete and set to run once the global climate simulations are released from international centres. Historic observations from our two coastal study sites, the Hauraki Gulf and Otago Shelf, are being analysed to guide the placement of new observations. Consultation, planning and pilot studies are underway for the upcoming measurement programmes. New analysis in our programme is also providing insight into how our regional ocean is changing by quantifying the subsurface oxygen trends around the country and the magnitude of a phytoplankton bloom that developed in the wake of severe Tropical Cyclone Maila earlier this year.
         </Markdown>
 
-        <Img src="https://raw.githubusercontent.com/TeMoanaMahana/website/main/newsletter/2026/public/oma-malia.png" width="520" alt="Phytoplankton bloom from tropical cyclones Oma and Malia" class="mb-6 rounded-lg" />
+        <Img src="https://raw.githubusercontent.com/TeMoanaMahana/website/main/newsletter/2026/public/oma-malia.png" width="520" alt="Phytoplankton bloom from tropical cyclones Oma and Malia" class="mb-6 rounded-lg"/>
         <Text class="mt-2 mb-6 text-center text-xs/4.5 text-gray-500 dark: text-gray-400">
           Analysis of the phytoplankton blooms caused by tropical cyclones Oma (2019) and Malia (2026) which were the largest blooms in the ocean colour record.
         </Text>

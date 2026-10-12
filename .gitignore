@@ -16,3 +16,6 @@ hugo_stats.json
 
 *.log
 *.tmp
+/assets/images/team/team-about.pxd
+/assets/images/team/team-home.pxd
+/static/.DS_Store
