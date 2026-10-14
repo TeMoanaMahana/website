@@ -7,8 +7,10 @@ image: "/images/blog/place-holder.png"
 header_theme: "dark"
 categories: ["Positions"]
 tags: ["positions"]
-draft: false
+draft: true
 ---
+
+**_Please note that this advertisement is no longer active_**
 
 The Te Moana Mahana project recently opened two PhD positions for aspiring doctoral fellows to pursue their research in physical oceanography and physical-biological interactions. The two positions are detailed below:
 
@@ -18,11 +20,11 @@ This PhD is funded by the Te Moana Mahana Project and will support the Ocean Hea
 
 ###### The accepted candidate will:
 
- - Be based in Earth Sciences New Zealand in Wellington, New Zealand and enrolled through the University of Auckland PhD programme in the Physics Department.
- - Join a collaborative team of ocean and climate scientists.
- - Gain access to a pool of oceanographic equipment and infrastructure, as well as supercomputing resources and simulation archives.
- - Be funded for a full PhD scholarship of 3.5 years (fees + stipend, subject to funding conditions). Please note that the scholarship will not be extended beyond this.
- - Be supervised by Prof. Craig Stevens and Assoc. Prof. Melissa Bowen.
+- Be based in Earth Sciences New Zealand in Wellington, New Zealand and enrolled through the University of Auckland PhD programme in the Physics Department.
+- Join a collaborative team of ocean and climate scientists.
+- Gain access to a pool of oceanographic equipment and infrastructure, as well as supercomputing resources and simulation archives.
+- Be funded for a full PhD scholarship of 3.5 years (fees + stipend, subject to funding conditions). Please note that the scholarship will not be extended beyond this.
+- Be supervised by Prof. Craig Stevens and Assoc. Prof. Melissa Bowen.
 
 ###### Key Dates
 
@@ -32,14 +34,14 @@ Please find more details about the project and the application process in the [*
 
 #### 2. Impact of Extreme Events on Physical-Biological Interactions and Primary Productivity in Aotearoa's Coastal Ocean
 
-This PhD is funded by the Te Moana Mahana Project and will support the activities of the Ocean Impacts Work Package. The PhD project will develop research to understand the impact of extreme weather and ocean events on ocean physical-biological coupling in two coastal areas, the Hauraki Gulf Tīkapa Moana Te Moananui a Toi and the Otago Shelf. 
+This PhD is funded by the Te Moana Mahana Project and will support the activities of the Ocean Impacts Work Package. The PhD project will develop research to understand the impact of extreme weather and ocean events on ocean physical-biological coupling in two coastal areas, the Hauraki Gulf Tīkapa Moana Te Moananui a Toi and the Otago Shelf.
 
 ###### The accepted candidate will:
 
- - Join a collaborative, trans-institutional team of ocean and climate scientists working across observation and modelling over a range of scales relating to New Zealand's coastal oceans.
- - Gain access to a pool of oceanographic equipment and infrastructure as well as supercomputing resources and simulation archives.
- - Be funded for a full PhD scholarship of 3.5 years (fees + stipend, subject to funding conditions). Please note that the scholarship will not be extended beyond this.
- - Be supervised by Dr. Alice Della Penna, Assoc. Prof. Melissa Bowen, Dr. Robert Smith at the University of Otago, and Dr. Charine Collins (Earth Sciences New Zealand).
+- Join a collaborative, trans-institutional team of ocean and climate scientists working across observation and modelling over a range of scales relating to New Zealand's coastal oceans.
+- Gain access to a pool of oceanographic equipment and infrastructure as well as supercomputing resources and simulation archives.
+- Be funded for a full PhD scholarship of 3.5 years (fees + stipend, subject to funding conditions). Please note that the scholarship will not be extended beyond this.
+- Be supervised by Dr. Alice Della Penna, Assoc. Prof. Melissa Bowen, Dr. Robert Smith at the University of Otago, and Dr. Charine Collins (Earth Sciences New Zealand).
 
 ###### Key Dates
 
