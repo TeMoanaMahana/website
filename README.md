@@ -114,6 +114,14 @@ In addition to these directories, there are several .html files within **layouts
 
 <details>
 
+<summary>Newsletter</summary>
+
+This directory holds the Maizzle newsletters that we have put out. We are not certain if we will continue to use Maizzle into the future. For more information about Maizzle, please visit the [Maizzle Website](https://maizzle.com/) for more details.
+
+</details>
+
+<details>
+
 <summary>Scripts</summary>
 
 This directory holds several scripts that are used in the function of the website. Most came with the Hugoplate template, with the two python scripts, **glider_data_processing.py** and **glider_plotting.py**, along with the associated **requirements.txt** files were added to allow for recurrent running and updating of the glider data.
