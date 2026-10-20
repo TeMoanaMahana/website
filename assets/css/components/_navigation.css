@@ -5,7 +5,6 @@
 header.header {
   background: transparent;
   /* Background via ::before */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   transition: var(--transition-smooth);
 }
 
@@ -22,14 +21,40 @@ header.header::before {
 }
 
 .dark header.header::before {
-  background-color: color-mix(in srgb, var(--color-darkmode-light), transparent 30%);
+  background-color: color-mix(
+    in srgb,
+    var(--color-darkmode-light),
+    transparent 30%
+  );
+}
+
+@media (max-width: 1023.98px) {
+  #nav-menu {
+    background-color: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+  }
+  .dark #nav-menu {
+    background-color: color-mix(
+      in srgb,
+      var(--color-darkmode-light),
+      transparent 30%
+    );
+  }
+  header.header:has(#nav-toggle:checked)::before {
+    background-color: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 /* Nav links */
 
 .nav-link {
   display: inline-block;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
 }
 
 .nav-link:hover {
@@ -54,11 +79,17 @@ header.header::before {
   box-shadow: var(--glass-shadow-light);
   padding: 15px;
   z-index: 50;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease;
 }
 
 .dark .nav-dropdown-list {
-  background-color: color-mix(in srgb, var(--color-darkmode-light), transparent 30%);
+  background-color: color-mix(
+    in srgb,
+    var(--color-darkmode-light),
+    transparent 30%
+  );
 }
 
 /* Hover bridge - prevents dropdown flicker */

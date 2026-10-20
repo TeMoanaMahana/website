@@ -1,7 +1,7 @@
 <header
-  class="header {{ if site.Params.navbar_fixed }}sticky top-0{{ end }} z-50 transition-all"
+  class="header {{ if site.Params.navbar_fixed }}sticky top-0{{ else }}relative{{ end }} z-50 transition-all"
 >
-  <nav class="navbar container">
+  <nav class="navbar container static!">
     <!-- logo -->
     <div class="order-0">
       <a class="navbar-brand block" href="{{ site.Home.RelPermalink }}">
@@ -31,7 +31,7 @@
     <!-- main navbar -->
     <ul
       id="nav-menu"
-      class="navbar-nav order-3 hidden lg:flex w-full pb-6 lg:order-1 lg:w-auto lg:space-x-2 lg:pb-0 xl:space-x-8"
+      class="navbar-nav order-3 hidden lg:flex absolute left-0 right-0 top-0 -z-10 pt-[5.3rem] w-full px-4 pb-6 max-h-[calc(100vh-4rem)] overflow-y-auto lg:static lg:z-auto lg:order-1 lg:w-auto lg:space-x-2 lg:p-0 lg:max-h-none lg:overflow-visible xl:space-x-8"
     >
       {{ $currentPage := . }} {{ range site.Menus.main }} {{ $menuURL := .URL |
       absLangURL }} {{ $pageURL:= $currentPage.Permalink | absLangURL }} {{
@@ -49,7 +49,7 @@
                        cursor-pointer flex items-center gap-x-2 hover:!transform-none"
         >
           <i
-            class="fa-solid fa-chevron-right text-[0.8em] transition-transform duration-150 group-hover:rotate-90"
+            class="fa-solid fa-chevron-right text-[0.8em] transition-transform duration-150 lg:group-hover:rotate-90"
           ></i>
           <span>{{ .Name }}</span>
         </label>
@@ -148,9 +148,11 @@
 </header>
 
 <script>
-  document
-    .querySelectorAll('input[id^="submenu-"]')
-    .forEach(function (checkbox) {
+  (function () {
+    var submenuCheckboxes = document.querySelectorAll('input[id^="submenu-"]');
+
+    // Rotate the chevron when a submenu is toggled (mobile)
+    submenuCheckboxes.forEach(function (checkbox) {
       checkbox.addEventListener("change", function () {
         var icon = document.querySelector('label[for="' + this.id + '"] i');
         if (icon) {
@@ -158,4 +160,23 @@
         }
       });
     });
+
+    // Reset mobile menu state when the screen grows to desktop size
+    var desktop = window.matchMedia("(min-width: 1024px)"); // Tailwind's lg
+
+    function resetMobileMenu(e) {
+      if (!e.matches) return;
+
+      var navToggle = document.getElementById("nav-toggle");
+      if (navToggle) navToggle.checked = false;
+
+      submenuCheckboxes.forEach(function (checkbox) {
+        checkbox.checked = false;
+        var icon = document.querySelector('label[for="' + checkbox.id + '"] i');
+        if (icon) icon.style.transform = "";
+      });
+    }
+
+    desktop.addEventListener("change", resetMobileMenu);
+  })();
 </script>
