@@ -4,20 +4,15 @@ description: "Real-time tracking of our underwater glider."
 layout: "single"
 ---
 
-# The Glider has Finished the Second Leg!
-
 <div class="glider-map">
   {{< glider-map >}}
 </div>
 
 ###### Data Download
 
-**_Finalised Data_**
-
-- [Leg 1 (Kaikoura Canyon to the Cook Strait Canyon)](/data/glider/raw/leg1_glider_data.csv)
-
 **_Preliminary Data_**
 
+- [Leg 1 (Kaikoura Canyon to the Cook Strait Canyon)](/data/glider/raw/leg1_glider_data.csv)
 - [Leg 2 (Otago Shelf Region)](/data/glider/raw/leg2_glider_data.csv)
 
 ###### See 3D Plots of the Collected Data Below:
