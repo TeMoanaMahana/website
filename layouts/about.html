@@ -10,7 +10,7 @@
         </div>
         {{ end }}
         <h2 class="h2 mb-6">{{ .Title }}</h2>
-        <div class="content text-lg">{{ .Content }}</div>
+        <div class="content text-lg text-left">{{ .Content }}</div>
       </div>
     </div>
   </div>
@@ -30,7 +30,9 @@
         class="md:col-7 {{ if (modBool $index 2) }}order-2 md:pl-12{{ else }}order-2 md:order-1 md:pr-12{{ end }}"
       >
         <h3 class="h4 mb-4">{{ .title }}</h3>
-        <div class="content text-lg">{{ .content | markdownify }}</div>
+        <div class="content text-lg text-left">
+          {{ .content | markdownify }}
+        </div>
       </div>
     </div>
   </div>
